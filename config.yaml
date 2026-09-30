@@ -1,0 +1,38 @@
+# TBotai — paper-tradingbot, strategieversie v1
+# Deze waarden zijn vastgelegd in HYPOTHESIS.md. NIET wijzigen tijdens de test.
+# Een wijziging = nieuwe strategieversie (v2) die opnieuw vanaf nul test.
+
+strategy_version: v1
+
+exchange: bitvavo          # ccxt-id van de beurs voor koersdata
+quote: EUR                 # alleen EUR-paren
+timeframe: 1d              # dagcandles, slot = 00:00 UTC
+
+start_capital_eur: 10000   # per strategie en per benchmark (nepgeld)
+cost_per_side: 0.0030      # 0,30% per verhandelde euro (fee 0,25% + slippage 0,05%)
+stress_cost_per_side: 0.0060
+min_order_eur: 5.0         # kleinere orders worden overgeslagen (behalve volledige uitstap)
+band: 0.20                 # alleen bijsturen als |huidig - doel| / doel > 20%
+
+universe:
+  size: 15                 # top-N EUR-paren
+  volume_days: 30          # mediaan dagvolume (EUR) over 30 dagen
+  min_history_days: 365
+  min_median_abs_return: 0.005   # sluit stablecoins uit
+  # Handmatige uitsluitlijst (vooraf vastgelegd): stablecoins, wrapped en getokeniseerde varianten
+  exclude_bases: [USDT, USDC, EURC, EURT, EURS, EURI, DAI, TUSD, FDUSD, PYUSD, USDE, USDS, BUSD, GUSD, USDP, FRAX, LUSD, RLUSD, USD1,
+                  WBTC, WETH, STETH, WSTETH, CBBTC, CBETH, RETH, WEETH, BETH, TBTC, SOLVBTC,
+                  PAXG, XAUT]
+
+vol_target: 0.25           # doelvolatiliteit per munt (S1, S2)
+vol_lookback: 90           # dagen voor σ90
+
+s1_lookbacks: [5, 10, 20, 30, 60, 90, 150, 250, 360]
+s3_lookback: 28            # S3: 28-daags gemiddeld rendement van het universum
+
+benchmark_btc_symbol: BTC/EUR
+
+live:
+  history_days: 1000       # dagen koershistorie per run (warme start S1)
+  fear_greed: true         # alleen loggen, geen signaal
+  funding: true            # alleen loggen, geen signaal (best effort)

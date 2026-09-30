@@ -1,0 +1,43 @@
+name: backtest
+
+# Handmatig starten: Actions -> backtest -> Run workflow
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: backtest
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Koersdata ophalen (alle EUR-markten)
+        run: python run.py download
+
+      - name: Backtest (0,30% en 0,60% kosten)
+        run: python run.py backtest
+
+      - name: Resultaten opslaan
+        run: |
+          git config user.name "tbotai-bot"
+          git config user.email "tbotai-bot@users.noreply.github.com"
+          git add results/
+          git diff --cached --quiet && exit 0
+          git commit -m "backtest $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
