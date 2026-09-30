@@ -10,3 +10,5 @@ Aantal geteste varianten tot nu toe: 3 (S1, S2, S3 in v1).
 
 ## Log
 <!-- Formaat: YYYY-MM-DD — observatie/hypothese — onderbouwing (aantal trades, periode) -->
+- 2026-09-30 — Observatie: S1 is in de backtest gemiddeld maar ~8% belegd (max per munt ≈ 1/15 × 0,25/σ90). De lage drawdown komt dus grotendeels uit cash aanhouden. — Backtest 2020-03 t/m 2026-09, 0,30% kosten.
+- 2026-09-30 — Hypothese (kandidaat v2, NIET toepassen in v1): vol-target op portefeuilleniveau (25% voor het hele mandje) i.p.v. per munt zou de blootstelling dichter bij het paper brengen. Pas beoordelen na ≥2 jaar v1-data en als aparte variant tellen.
