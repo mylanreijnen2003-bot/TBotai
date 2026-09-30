@@ -1,0 +1,62 @@
+{
+  "S1": {
+    "dagen": 2397,
+    "eindwaarde": 14712.828187551175,
+    "rendement_totaal": 0.4716453917950725,
+    "cagr": 0.06060093631144503,
+    "sharpe": 0.8192077049271677,
+    "max_drawdown": -0.16074784283246968,
+    "calmar": 0.37699377636191933,
+    "gem_blootstelling": 0.08095308286293909,
+    "pct_tijd_belegd": 0.8694745621351125,
+    "omzet_per_jaar": 3.7615325470173024
+  },
+  "S2": {
+    "dagen": 2397,
+    "eindwaarde": 16619.210200032,
+    "rendement_totaal": 0.6646755260396426,
+    "cagr": 0.08069382724404894,
+    "sharpe": 0.4924500620402473,
+    "max_drawdown": -0.37367479369178247,
+    "calmar": 0.21594666968788773,
+    "gem_blootstelling": 0.27973579087275147,
+    "pct_tijd_belegd": 1.0,
+    "omzet_per_jaar": 1.9461007272956699
+  },
+  "S3": {
+    "dagen": 2397,
+    "eindwaarde": 65530.99001480934,
+    "rendement_totaal": 5.553099001480934,
+    "cagr": 0.33144534688310356,
+    "sharpe": 0.8008037278973188,
+    "max_drawdown": -0.7696530421813339,
+    "calmar": 0.43064254763903537,
+    "gem_blootstelling": 0.5095492239618187,
+    "pct_tijd_belegd": 0.5262718932443703,
+    "omzet_per_jaar": 12.923005677869666
+  },
+  "B1": {
+    "dagen": 2397,
+    "eindwaarde": 89847.56649121402,
+    "rendement_totaal": 8.03866518901613,
+    "cagr": 0.3982650928079132,
+    "sharpe": 0.8674899899396035,
+    "max_drawdown": -0.7359287295947268,
+    "calmar": 0.5411734544284422,
+    "gem_blootstelling": 1.0,
+    "pct_tijd_belegd": 1.0,
+    "omzet_per_jaar": 0.02713512421527932
+  },
+  "B2": {
+    "dagen": 2397,
+    "eindwaarde": 15836.248753553882,
+    "rendement_totaal": 0.5931266246075202,
+    "cagr": 0.07348849892825915,
+    "sharpe": 0.5033349434082366,
+    "max_drawdown": -0.9219045252678463,
+    "calmar": 0.07971378479448087,
+    "gem_blootstelling": 0.9999702984405576,
+    "pct_tijd_belegd": 1.0,
+    "omzet_per_jaar": 5.253028346983033
+  }
+}
