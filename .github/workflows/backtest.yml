@@ -14,7 +14,7 @@ permissions:
 jobs:
   backtest:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -28,6 +28,12 @@ jobs:
 
       - name: Backtest (0,30% en 0,60% kosten)
         run: python run.py backtest
+
+      - name: 4-uurs data ophalen (BTC, ETH, SOL)
+        run: python run.py download4h
+
+      - name: Backtest 4-uurs spoor (0,15% / 0,30% / 0,60% kosten)
+        run: python run.py backtest4h
 
       - name: Resultaten opslaan
         run: |

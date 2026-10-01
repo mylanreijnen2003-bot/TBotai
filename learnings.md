@@ -6,7 +6,7 @@ Regels:
 - Elke wijziging = nieuwe strategieversie (v2 …) die opnieuw vanaf nul getest wordt. Resultaten van versies worden niet opgeteld.
 - Houd bij hoeveel varianten er in totaal zijn geprobeerd (voor de deflated Sharpe).
 
-Aantal geteste varianten tot nu toe: 5 (S1–S3 vanaf 30 sept, S4–S5 vanaf 2 okt 2026).
+Aantal geteste varianten tot nu toe: 6 (S1–S3 vanaf 30 sept, S4–S5 vanaf 2 okt, S6 4-uurs vanaf 1 okt 2026).
 
 ## Log
 <!-- Formaat: YYYY-MM-DD — observatie/hypothese — onderbouwing (aantal trades, periode) -->

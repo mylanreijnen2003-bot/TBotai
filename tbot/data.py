@@ -14,12 +14,14 @@ DAY_MS = 86_400_000
 COLS = ["open", "high", "low", "close", "volume"]
 
 
-def to_frame(rows: list[list]) -> pd.DataFrame:
-    """ccxt-OHLCV-rijen -> DataFrame met een datum-index (UTC, 00:00)."""
+def to_frame(rows: list[list], normalize: bool = True) -> pd.DataFrame:
+    """ccxt-OHLCV-rijen -> DataFrame met een tijd-index (UTC). Dagcandles: datum om 00:00."""
     if not rows:
         return pd.DataFrame(columns=COLS, index=pd.DatetimeIndex([], name="date"))
     df = pd.DataFrame(rows, columns=["ts"] + COLS)
-    df["date"] = pd.to_datetime(df["ts"], unit="ms", utc=True).dt.tz_localize(None).dt.normalize()
+    df["date"] = pd.to_datetime(df["ts"], unit="ms", utc=True).dt.tz_localize(None)
+    if normalize:
+        df["date"] = df["date"].dt.normalize()
     df = df.drop(columns="ts").drop_duplicates("date", keep="last").set_index("date").sort_index()
     return df.astype(float)
 
@@ -45,25 +47,30 @@ class CcxtSource:
 
     def fetch_daily(self, symbol: str, days: int | None = None, since: pd.Timestamp | None = None) -> pd.DataFrame:
         """Dagcandles ophalen. Let op: de laatste rij kan de nog lopende candle van vandaag zijn."""
+        return self.fetch(symbol, "1d", bars=days, since=since)
+
+    def fetch(self, symbol: str, timeframe: str, bars: int | None = None, since: pd.Timestamp | None = None) -> pd.DataFrame:
+        """Candles ophalen voor `timeframe` ('1d' of '4h'). De laatste rij kan nog lopen."""
+        step = self.ex.parse_timeframe(timeframe) * 1000
         now_ms = self.ex.milliseconds()
         if since is not None:
             start = int(pd.Timestamp(since).tz_localize("UTC").timestamp() * 1000)
-        elif days is not None:
-            start = now_ms - (days + 2) * DAY_MS
+        elif bars is not None:
+            start = now_ms - (bars + 2) * step
         else:
             start = int(pd.Timestamp("2018-01-01", tz="UTC").timestamp() * 1000)
         rows: list[list] = []
         cursor = start
-        for _ in range(100):  # harde limiet tegen oneindige lussen
-            batch = self._retry(lambda: self.ex.fetch_ohlcv(symbol, "1d", since=cursor, limit=1000))
+        for _ in range(200):  # harde limiet tegen oneindige lussen
+            batch = self._retry(lambda: self.ex.fetch_ohlcv(symbol, timeframe, since=cursor, limit=1000))
             if not batch:
                 break
             rows.extend(batch)
             last = batch[-1][0]
-            if last <= cursor or last >= now_ms - DAY_MS:
+            if last <= cursor or last >= now_ms - step:
                 break
-            cursor = last + DAY_MS
-        return to_frame(rows)
+            cursor = last + step
+        return to_frame(rows, normalize=(timeframe == "1d"))
 
     @staticmethod
     def _retry(fn, tries: int = 4):

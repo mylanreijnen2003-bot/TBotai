@@ -36,6 +36,13 @@ class FakeSource:
     def list_markets(self):
         return sorted(self.candles)
 
+    def fetch(self, symbol, timeframe, bars=None, since=None):
+        df = self.candles[symbol]
+        df = df[df.index <= self.today]
+        if bars is not None:
+            df = df.tail(bars + 1)
+        return df.copy()
+
     def fetch_daily(self, symbol, days=None, since=None):
         df = self.candles[symbol]
         df = df[df.index <= self.today]  # inclusief de lopende candle van vandaag
@@ -62,3 +69,18 @@ def market():
     stable = make_candles(n=1100, seed=5, vol=0.0005, drift=0.0, volume=1e9, price=1.0)
     coins["USDC/EUR"] = stable
     return coins
+
+
+def make_4h(n=3000, start="2023-01-01", seed=0, drift=0.0, vol=0.01, price=100.0):
+    df = make_candles(n=n, start=start, seed=seed, drift=drift, vol=vol, price=price)
+    df.index = pd.date_range(start, periods=n, freq="4h", name="date")
+    return df
+
+
+@pytest.fixture
+def market4h():
+    return {
+        "BTC/EUR": make_4h(seed=1, drift=0.0003, price=30000),
+        "ETH/EUR": make_4h(seed=2, drift=0.0001, price=2000),
+        "SOL/EUR": make_4h(seed=3, drift=-0.0001, price=100),
+    }

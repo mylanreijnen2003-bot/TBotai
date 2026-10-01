@@ -1,13 +1,15 @@
 # TBotai — paper-tradingbot
 
-Test vijf vooraf vastgelegde crypto-strategieën met **nepgeld** en echte Bitvavo-koersen, tegen BTC vasthouden en een gelijk verdeeld mandje. Geen API-sleutels, geen echt geld.
+Test zes vooraf vastgelegde crypto-strategieën met **nepgeld** en echte Bitvavo-koersen, tegen BTC vasthouden en een gelijk verdeeld mandje. Geen API-sleutels, geen echt geld.
 
 - Regels en hypotheses: [`HYPOTHESIS.md`](HYPOTHESIS.md)
-- Stand van de live-test: [`state/summary.md`](state/summary.md) (verschijnt na de eerste run)
+- Stand van de live-test: [`state/summary.md`](state/summary.md) (dagstrategieën S1–S5)
+- Stand van het 4-uurs spoor: [`state_4h/summary.md`](state_4h/summary.md) (S6)
 - Backtest-resultaten: [`results/`](results/)
 
 ## Hoe het draait
 - **Elke dag 00:17 UTC** start GitHub Actions (`paper-run`) de bot: signaal op het slot van gisteren, uitvoering tegen de open van vandaag, alles opgeslagen in `state/`.
+- **Elke 4 uur** (`paper-run-4h`) het 4-uurs spoor S6 op BTC, ETH en SOL, met eigen logboek in `state_4h/`.
 - **Backtest:** handmatig via Actions → `backtest` → Run workflow.
 - **Tests:** draaien bij elke codewijziging.
 
@@ -33,6 +35,7 @@ python run.py backtest       # backtest
 | `tbot/strategies.py` | S1–S5, B1, B2 |
 | `tbot/portfolio.py` | nepgeld-portefeuille, kosten, band |
 | `tbot/live.py` | de dagelijkse run |
+| `tbot/h4.py` | 4-uurs spoor S6 (live + backtest) |
 | `tbot/backtest.py` | backtest met dezelfde code |
 | `tbot/ledger.py` | logboek (SQLite) en reconciliatie |
 | `learnings.md` | observaties en hypotheses (worden níét automatisch toegepast) |

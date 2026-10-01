@@ -79,5 +79,25 @@ Live gestart vanaf de eerstvolgende run (2 oktober 2026); hun rendement telt van
 - Drempels 70% en 60% zijn eigen keuzes, niet uit een bron.
 - Totaal geteste varianten nu: 5 (S1–S5).
 
+## Aanvulling 1 oktober 2026 — S6, 4-uurs trendsprongen (apart spoor)
+Toegevoegd op verzoek (korte stijgingen van 1–3 dagen meepakken), vóór het zien van een backtest.
+Eigen logboek in `state_4h/`, draait elke 4 uur. Raakt S1–S5 niet.
+
+- **Munten:** BTC/EUR, ETH/EUR, SOL/EUR. Elk krijgt 1/3 van het vermogen bij instap.
+- **Candles:** 4 uur (UTC). Signaal op het slot van candle t, uitvoering tegen de open van candle t+1.
+- **Instap:** slot ≥ hoogste slot van de vorige 20 candles (±3,3 dagen).
+- **Vangnet:** midden van het 20-candle-kanaal (max + min van de laatste 20 sloten / 2); schuift alleen omhoog.
+- **Uitstap:** slot onder het vangnet van de vorige candle. Geen nieuwe instap op dezelfde candle.
+- **Tussendoor:** geen bijsturing van een lopende positie.
+- **Kosten:** 0,30% per kant (live). Backtest ook 0,15% (limietorders) en 0,60%.
+- **Gemiste runs:** tot 12 gemiste candles (2 dagen) worden achteraf in volgorde verwerkt.
+- **Benchmarks in dit spoor:** HB1 = 100% BTC vasthouden, HB3 = 1/3 BTC, ETH, SOL vasthouden.
+
+### Hypothese
+- **H6:** na 0,30% kosten: CAGR S6 ≥ CAGR S5 (dagversie) én ≥ CAGR HB3, met max drawdown ≤ 60% van HB3.
+- Als S6 bij 0,30% kosten onder S5 eindigt, levert de korte termijn niets extra op; dan stoppen we S6.
+- De drempel 60% en de lookback 20 zijn eigen keuzes, niet uit een bron.
+- Totaal geteste varianten nu: 6 (S1–S6).
+
 ## Alleen loggen, niet gebruiken
 Fear & Greed Index en BTC-funding rate worden dagelijks met tijdstempel opgeslagen (`state/observations.csv`) voor een latere, eerlijke A/B-test in een volgende versie.
