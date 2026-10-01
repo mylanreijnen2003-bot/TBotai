@@ -61,10 +61,14 @@ class CcxtSource:
             start = int(pd.Timestamp("2018-01-01", tz="UTC").timestamp() * 1000)
         rows: list[list] = []
         cursor = start
-        for _ in range(200):  # harde limiet tegen oneindige lussen
+        for _ in range(400):  # harde limiet tegen oneindige lussen
             batch = self._retry(lambda: self.ex.fetch_ohlcv(symbol, timeframe, since=cursor, limit=1000))
             if not batch:
-                break
+                # lege periode (munt bestond nog niet op de beurs): verder vooruit zoeken
+                cursor += 1000 * step
+                if cursor >= now_ms:
+                    break
+                continue
             rows.extend(batch)
             last = batch[-1][0]
             if last <= cursor or last >= now_ms - step:
