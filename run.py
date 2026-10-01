@@ -81,8 +81,11 @@ def main(argv: list[str] | None = None) -> int:
         from tbot.h4 import run_backtest_h4, write_results_h4
 
         candles = {s: load_cached(ROOT / "data" / "candles_4h", s) for s in cfg["h4"]["symbols"]}
+        for s_, v in candles.items():
+            print(f"{s_}: {0 if v is None else len(v)} candles"
+                  + (f" ({v.index[0]} t/m {v.index[-1]})" if v is not None and len(v) else ""))
         if any(v is None or v.empty for v in candles.values()):
-            print("Geen 4-uurs data. Draai eerst: python run.py download4h")
+            print("Geen (volledige) 4-uurs data. Draai eerst: python run.py download4h")
             return 1
         s5 = None
         p = ROOT / "results" / "equity_base.csv"
