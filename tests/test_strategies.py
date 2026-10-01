@@ -106,12 +106,3 @@ def test_s4_is_trend_without_vol(market, cfg):
         assert abs(tg[s] - f.trend_fraction(s, t) / 3) < 1e-12
     assert sum(tg.values()) <= 1 + 1e-12
 
-
-def test_s5_btc_only(market, cfg):
-    from tbot.strategies import s5_targets
-
-    f = _feats(market, cfg)
-    t = market["BTC/EUR"].index[800]
-    tg = s5_targets(t, f, cfg)
-    assert list(tg) == ["BTC/EUR"]
-    assert 0 <= tg["BTC/EUR"] <= 1

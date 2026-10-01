@@ -12,7 +12,7 @@ import pandas as pd
 
 from .features import Features
 
-STRATEGIES = ["S1", "S2", "S3", "S4", "S5", "B1", "B2"]
+STRATEGIES = ["S1", "S2", "S3", "S4", "B1", "B2"]
 
 
 def _vol_scale(feats: Features, sym: str, t, cfg) -> float:
@@ -65,12 +65,6 @@ def s4_targets(t, universe, feats: Features, cfg) -> dict[str, float]:
     return {s: (1.0 / n) * feats.trend_fraction(s, t) for s in universe}
 
 
-def s5_targets(t, feats: Features, cfg) -> dict[str, float]:
-    """S5 — alleen BTC met het trend-ensemble: w_BTC = actieve signalen / 9 (0..100%)."""
-    btc = cfg["benchmark_btc_symbol"]
-    return {btc: feats.trend_fraction(btc, t)}
-
-
 def b1_targets(first_day: bool, cfg) -> dict[str, float] | None:
     """B1 — 100% BTC, eenmalig kopen en vasthouden."""
     return {cfg["benchmark_btc_symbol"]: 1.0} if first_day else None
@@ -94,8 +88,6 @@ def targets_for(name: str, t, fill_date, universe, feats: Features, cfg, first_d
         return tg
     if name == "S4":
         return s4_targets(t, universe, feats, cfg)
-    if name == "S5":
-        return s5_targets(t, feats, cfg)
     if name == "B1":
         return b1_targets(first_day, cfg)
     if name == "B2":
@@ -104,5 +96,5 @@ def targets_for(name: str, t, fill_date, universe, feats: Features, cfg, first_d
 
 
 # Welke portefeuilles de band-regel gebruiken en munten buiten het universum verkopen
-USES_BAND = {"S1": True, "S2": True, "S3": True, "S4": True, "S5": True, "B1": False, "B2": False}
-FOLLOWS_UNIVERSE = {"S1": True, "S2": True, "S3": True, "S4": True, "S5": False, "B1": False, "B2": True}
+USES_BAND = {"S1": True, "S2": True, "S3": True, "S4": True, "B1": False, "B2": False}
+FOLLOWS_UNIVERSE = {"S1": True, "S2": True, "S3": True, "S4": True, "B1": False, "B2": True}

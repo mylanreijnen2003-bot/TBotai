@@ -134,11 +134,11 @@ def summary_markdown(
             f"- H1 (S1 drawdown ≤ 50% van B2 én Sharpe S1 ≥ B2): drawdown {'ja' if h1_dd else 'nee'}, "
             f"Sharpe {'ja' if h1_sr else 'nee'}"
         )
-    for name, bench, lim in [("S4", "B2", 0.70), ("S5", "B1", 0.60)]:
+    for name, bench, lim in [("S4", "B2", 0.70)]:
         if name in m and bench in m and "cagr" in m[name]:
             ok_r = m[name]["cagr"] >= m[bench]["cagr"]
             ok_dd = m[name]["max_drawdown"] >= lim * m[bench]["max_drawdown"]
-            hn = "H4" if name == "S4" else "H5"
+            hn = "H4"
             lines.append(
                 f"- {hn} ({name} CAGR ≥ {bench} én drawdown ≤ {int(lim * 100)}% van {bench}): "
                 f"rendement {'ja' if ok_r else 'nee'}, drawdown {'ja' if ok_dd else 'nee'}"
@@ -148,7 +148,6 @@ def summary_markdown(
         ("H3 (S1 − S3)", "S1", "S3"),
         ("S1 − B2", "S1", "B2"),
         ("S4 − B2", "S4", "B2"),
-        ("S5 − B1", "S5", "B1"),
     ]:
         if a in equity and b in equity:
             p = paired_test(equity[a], equity[b])

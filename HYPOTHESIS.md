@@ -99,5 +99,11 @@ Eigen logboek in `state_4h/`, draait elke 4 uur. Raakt S1–S5 niet.
 - De drempel 60% en de lookback 20 zijn eigen keuzes, niet uit een bron.
 - Totaal geteste varianten nu: 6 (S1–S6).
 
+## Afgevallen op 1 oktober 2026 (backtest, vóór live-start)
+Volgens de vooraf vastgelegde hypotheses verwijderd. Ze tellen mee als geteste varianten.
+- **S5 (BTC-trend):** H5 niet gehaald — CAGR 27,2% tegen 39,9% voor B1, max drawdown −47% (grens: 60% van B1 = −44%).
+- **S6 (4-uurs trendsprongen):** H6 niet gehaald — bij 0,30% kosten −1,8% per jaar (2021-08 t/m 2026-09), holdout −30% per jaar; 772 trades, 30% winstgevend.
+- Details in `results/` en `learnings.md`. Code staat in de git-geschiedenis.
+
 ## Alleen loggen, niet gebruiken
 Fear & Greed Index en BTC-funding rate worden dagelijks met tijdstempel opgeslagen (`state/observations.csv`) voor een latere, eerlijke A/B-test in een volgende versie.

@@ -14,7 +14,7 @@ permissions:
 jobs:
   backtest:
     runs-on: ubuntu-24.04
-    timeout-minutes: 150
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -34,18 +34,6 @@ jobs:
           set -o pipefail
           mkdir -p results
           python run.py backtest 2>&1 | tee -a results/run_log.txt
-
-      - name: 4-uurs data ophalen (BTC, ETH, SOL)
-        run: |
-          set -o pipefail
-          mkdir -p results
-          python run.py download4h 2>&1 | tee -a results/run_log.txt
-
-      - name: Backtest 4-uurs spoor (0,15% / 0,30% / 0,60% kosten)
-        run: |
-          set -o pipefail
-          mkdir -p results
-          python run.py backtest4h 2>&1 | tee -a results/run_log.txt
 
       - name: Resultaten opslaan
         if: always()

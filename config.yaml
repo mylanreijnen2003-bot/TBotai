@@ -37,12 +37,3 @@ live:
   fear_greed: true         # alleen loggen, geen signaal
   funding: true            # alleen loggen, geen signaal (best effort)
 
-# ---- 4-uurs spoor (S6), apart logboek in state_4h/ — vastgelegd 1 okt 2026 ----
-h4:
-  symbols: [BTC/EUR, ETH/EUR, SOL/EUR]
-  timeframe: 4h
-  lookback: 20             # Donchian over 20 candles (±3,3 dagen)
-  cost_per_side: 0.0030    # basis; backtest ook 0,15% (limietorders) en 0,60%
-  backtest_costs: [0.0015, 0.0030, 0.0060]
-  history_bars: 300        # candles per live-run
-  max_catchup_bars: 12     # gemiste candles inhalen (max 2 dagen)

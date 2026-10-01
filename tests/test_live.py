@@ -36,8 +36,8 @@ def test_live_multiple_days_reconcile(tmp_path, cfg, market):
     led = Ledger(tmp_path / "state" / "ledger.db")
     assert led.reconcile(cfg["start_capital_eur"]) == []
     eq = pd.read_sql_query("SELECT * FROM equity", led.db)
-    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "S5", "B1", "B2"}
-    assert len(eq) == 40 * 7
+    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "B1", "B2"}
+    assert len(eq) == 40 * 6
     # B1 = 100% BTC na de eerste dag
     b1 = pd.read_sql_query("SELECT * FROM positions WHERE strategy='B1'", led.db)
     assert list(b1["symbol"]) == ["BTC/EUR"]
@@ -88,7 +88,7 @@ def test_new_strategy_added_later(tmp_path, cfg, market):
     led = Ledger(tmp_path / "state" / "ledger.db")
     assert led.reconcile(cfg["start_capital_eur"]) == []
     eq = pd.read_sql_query("SELECT * FROM equity", led.db)
-    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "S5", "B1", "B2"}
+    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "B1", "B2"}
     assert len(eq[eq.strategy == "S4"]) == 1
     starts = led.get_meta("strategy_start")
     assert starts["S4"] != starts["S1"]
