@@ -34,7 +34,7 @@ def step(
     feats: Features,
     portfolios: dict[str, Portfolio],
     cfg: dict,
-    first_day: bool,
+    first_day: bool | dict[str, bool],
     universe_day: bool,
     cost: float | None = None,
 ) -> dict[str, DayResult]:
@@ -42,7 +42,8 @@ def step(
     cost = cfg["cost_per_side"] if cost is None else cost
     out = {}
     for name, pf in portfolios.items():
-        tg = targets_for(name, t, fill_date, universe, feats, cfg, first_day, universe_day)
+        fd = first_day.get(name, False) if isinstance(first_day, dict) else first_day
+        tg = targets_for(name, t, fill_date, universe, feats, cfg, fd, universe_day)
         before = pf.weights(prices)
         trades = pf.rebalance(
             tg,

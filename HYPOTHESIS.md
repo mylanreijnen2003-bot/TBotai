@@ -60,5 +60,24 @@ Onderbouwing: rapport "Crypto spot strategieën met bewijs" (30 sept 2026).
 - De 1/N-verdeling per munt in S1 is onze interpretatie van het paper.
 - De drempels 20% band, 50% van B2-drawdown en 1,5× backtest-drawdown zijn eigen keuzes, niet uit een bron.
 
+## Aanvulling 1 oktober 2026 — S4 en S5 (gericht op rendement)
+Toegevoegd op verzoek, vóór het zien van een backtest. S1–S3, B1 en B2 blijven ongewijzigd.
+Live gestart vanaf de eerstvolgende run (2 oktober 2026); hun rendement telt vanaf die dag.
+
+### S4 — Trend-ensemble zonder volatiliteitsrem
+- Zelfde 9 Donchian-toestanden per munt als S1, zelfde universum, band en kosten.
+- w_i = (1/N) × (aantal actieve toestanden / 9). Geen 0,25/σ90-factor. Max 100% belegd.
+
+### S5 — BTC-trend
+- Alleen BTC/EUR, met de 9 Donchian-toestanden van S1 op BTC.
+- w_BTC = aantal actieve toestanden / 9 (0–100%). Zelfde band en kosten. Volgt het universum niet.
+
+### Hypotheses
+- **H4:** CAGR S4 ≥ CAGR B2, én max drawdown S4 ≤ 70% van die van B2.
+- **H5:** CAGR S5 ≥ CAGR B1, én max drawdown S5 ≤ 60% van die van B1.
+- Zelfde toets en zelfde oordeelstermijn als hierboven (≥2 jaar forward + backtest).
+- Drempels 70% en 60% zijn eigen keuzes, niet uit een bron.
+- Totaal geteste varianten nu: 5 (S1–S5).
+
 ## Alleen loggen, niet gebruiken
 Fear & Greed Index en BTC-funding rate worden dagelijks met tijdstempel opgeslagen (`state/observations.csv`) voor een latere, eerlijke A/B-test in een volgende versie.

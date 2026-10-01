@@ -36,8 +36,8 @@ def test_live_multiple_days_reconcile(tmp_path, cfg, market):
     led = Ledger(tmp_path / "state" / "ledger.db")
     assert led.reconcile(cfg["start_capital_eur"]) == []
     eq = pd.read_sql_query("SELECT * FROM equity", led.db)
-    assert set(eq["strategy"]) == {"S1", "S2", "S3", "B1", "B2"}
-    assert len(eq) == 40 * 5
+    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "S5", "B1", "B2"}
+    assert len(eq) == 40 * 7
     # B1 = 100% BTC na de eerste dag
     b1 = pd.read_sql_query("SELECT * FROM positions WHERE strategy='B1'", led.db)
     assert list(b1["symbol"]) == ["BTC/EUR"]
@@ -64,3 +64,32 @@ def test_version_mismatch_errors(tmp_path, cfg, market):
     assert _run(tmp_path, cfg, src, market["BTC/EUR"].index[700]) == "ok"
     cfg2 = dict(cfg, strategy_version="v2")
     assert _run(tmp_path, cfg2, src, market["BTC/EUR"].index[701]) == "error"
+
+
+def test_new_strategy_added_later(tmp_path, cfg, market):
+    """Een strategie die later wordt toegevoegd start met het startkapitaal; bestaande lopen ongewijzigd door."""
+    import tbot.engine as engine
+    import tbot.live as live
+    import tbot.strategies as st
+
+    src = FakeSource(market)
+    old = ["S1", "S2", "S3", "B1", "B2"]
+    orig = st.STRATEGIES[:]
+    try:
+        engine.STRATEGIES[:] = old
+        live.STRATEGIES[:] = old
+        assert _run(tmp_path, cfg, src, market["BTC/EUR"].index[700]) == "ok"
+    finally:
+        engine.STRATEGIES[:] = orig
+        live.STRATEGIES[:] = orig
+    led = Ledger(tmp_path / "state" / "ledger.db")
+    s1_before = led.db.execute("SELECT cash FROM cash WHERE strategy='S1'").fetchone()[0]
+    assert _run(tmp_path, cfg, src, market["BTC/EUR"].index[701]) == "ok"
+    led = Ledger(tmp_path / "state" / "ledger.db")
+    assert led.reconcile(cfg["start_capital_eur"]) == []
+    eq = pd.read_sql_query("SELECT * FROM equity", led.db)
+    assert set(eq["strategy"]) == {"S1", "S2", "S3", "S4", "S5", "B1", "B2"}
+    assert len(eq[eq.strategy == "S4"]) == 1
+    starts = led.get_meta("strategy_start")
+    assert starts["S4"] != starts["S1"]
+    assert s1_before is not None

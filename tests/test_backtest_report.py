@@ -10,7 +10,7 @@ from tbot.report import metrics, paired_test
 def test_backtest_runs_end_to_end(tmp_path, cfg, market):
     res = run_backtest(market, cfg, start="2021-01-01")
     eq = res["equity"]
-    assert list(eq.columns) == ["S1", "S2", "S3", "B1", "B2"]
+    assert list(eq.columns) == ["S1", "S2", "S3", "S4", "S5", "B1", "B2"]
     assert len(eq) > 300
     assert (eq > 0).all().all()
     assert (res["exposure"] <= 1 + 1e-9).all().all()      # nooit hefboom
@@ -22,7 +22,7 @@ def test_backtest_runs_end_to_end(tmp_path, cfg, market):
 def test_higher_costs_never_help(cfg, market):
     base = run_backtest(market, cfg, start="2021-01-01", cost=0.003)["equity"].iloc[-1]
     stress = run_backtest(market, cfg, start="2021-01-01", cost=0.006)["equity"].iloc[-1]
-    for s in ["S1", "S2", "S3", "B2"]:
+    for s in ["S1", "S2", "S3", "S4", "S5", "B2"]:
         assert stress[s] <= base[s] + 1e-6
 
 

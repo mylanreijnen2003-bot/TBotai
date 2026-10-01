@@ -72,13 +72,20 @@ def run_live(
 
     try:
         pfs = ledger.load_portfolios()
-        first_day = not pfs
-        if first_day:
-            pfs = new_portfolios(cfg)
+        first_run = not pfs
+        if first_run:
             ledger.set_meta("start_date", today.date().isoformat())
             ledger.set_meta("strategy_version", cfg["strategy_version"])
         elif ledger.get_meta("strategy_version") != cfg["strategy_version"]:
             raise RuntimeError("strategy_version in config.yaml wijkt af van de lopende test. Start een nieuwe state-map.")
+        # portefeuilles die (nog) niet bestaan, starten vandaag met het startkapitaal
+        first_day = {n: n not in pfs for n in STRATEGIES}
+        starts = ledger.get_meta("strategy_start", {}) or {}
+        for n, fresh in new_portfolios(cfg).items():
+            if n not in pfs:
+                pfs[n] = fresh
+                starts[n] = today.date().isoformat()
+        ledger.set_meta("strategy_start", starts)
 
         # --- universum ---------------------------------------------------
         month = today.strftime("%Y-%m")
@@ -204,6 +211,14 @@ def _write_summary(ledger: Ledger, state_dir: Path) -> None:
         f"Start: {start}. Een paper-test van maanden controleert code en kosten; hij wijst géén winnaar aan.",
         "",
     ]
+    starts = ledger.get_meta("strategy_start", {}) or {}
+    later = {n: d for n, d in starts.items() if d != start}
+    if later:
+        head += [
+            "Later gestart: " + ", ".join(f"{n} op {d}" for n, d in sorted(later.items()))
+            + ". Hun rendement telt vanaf die datum; vergelijk ze vooral met B1/B2 over dezelfde dagen.",
+            "",
+        ]
     from .config import load_config
 
     cap = float(load_config()["start_capital_eur"])

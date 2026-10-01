@@ -93,3 +93,25 @@ def test_no_lookahead(market, cfg):
     monday = t - pd.Timedelta(days=t.weekday())   # maandag op of vóór t
     tm = monday - pd.Timedelta(days=1)
     assert s3_targets(tm, monday, u, f1, cfg) == s3_targets(tm, monday, u, f2, cfg)
+
+
+def test_s4_is_trend_without_vol(market, cfg):
+    from tbot.strategies import s4_targets
+
+    f = _feats(market, cfg)
+    t = market["BTC/EUR"].index[800]
+    u = ["C01/EUR", "C03/EUR", "C04/EUR"]
+    tg = s4_targets(t, u, f, cfg)
+    for s in u:
+        assert abs(tg[s] - f.trend_fraction(s, t) / 3) < 1e-12
+    assert sum(tg.values()) <= 1 + 1e-12
+
+
+def test_s5_btc_only(market, cfg):
+    from tbot.strategies import s5_targets
+
+    f = _feats(market, cfg)
+    t = market["BTC/EUR"].index[800]
+    tg = s5_targets(t, f, cfg)
+    assert list(tg) == ["BTC/EUR"]
+    assert 0 <= tg["BTC/EUR"] <= 1
