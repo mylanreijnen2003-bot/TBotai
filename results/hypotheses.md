@@ -1,24 +1,3 @@
-430 markten opgeslagen
-backtest base klaar -> results/backtest_base.md
-backtest stress klaar -> results/backtest_stress.md
-BTC/EUR: 14791 candles vanaf 2020-01-01 00:00:00
-ETH/EUR: 14791 candles vanaf 2020-01-01 00:00:00
-SOL/EUR: 11308 candles vanaf 2021-08-03 12:00:00
-BTC/EUR: 14791 candles (2020-01-01 00:00:00 t/m 2026-10-01 04:00:00)
-ETH/EUR: 14791 candles (2020-01-01 00:00:00 t/m 2026-10-01 04:00:00)
-SOL/EUR: 11308 candles (2021-08-03 12:00:00 t/m 2026-10-01 04:00:00)
-backtest 4u 15bp klaar -> results/backtest_4h_15bp.md
-backtest 4u 30bp klaar -> results/backtest_4h_30bp.md
-backtest 4u 60bp klaar -> results/backtest_4h_60bp.md
-430 markten opgeslagen
-backtest base klaar -> results/backtest_base.md
-backtest stress klaar -> results/backtest_stress.md
-S8 weekdag 1 klaar
-S8 weekdag 2 klaar
-S8 weekdag 3 klaar
-S8 weekdag 4 klaar
-S8 weekdag 5 klaar
-S8 weekdag 6 klaar
 # Beoordeling H7–H10 (vooraf vastgelegd op 1 okt 2026)
 
 Backtest 2020-03-07 t/m 2026-09-30. Holdout vanaf 2025-04-01 (let op: deze periode was al gezien bij S1–S6, dus geen schone test).
@@ -46,4 +25,3 @@ S8 per uitvoeringsdag (0 = maandag; CAGR-criterium gebruikt het gemiddelde):
 Correlatie dagrendement S9 met S4: 0.87.
 S7: gemiddeld 23.4% belegd, omzet 947.7% per jaar.
 S9: gemiddeld 56.5% belegd, omzet 1212.5% per jaar.
-

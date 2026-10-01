@@ -1,0 +1,25 @@
+{
+  "S7": {
+    "geslaagd": false,
+    "gezakt_op": [
+      "drawdown \u2264 30%"
+    ]
+  },
+  "S8": {
+    "geslaagd": false,
+    "gezakt_op": [
+      "drawdown \u2264 35%"
+    ]
+  },
+  "S9": {
+    "geslaagd": false,
+    "gezakt_op": [
+      "drawdown \u2264 35%",
+      "DSR \u2265 0,90"
+    ]
+  },
+  "S10": {
+    "geslaagd": true,
+    "gezakt_op": []
+  }
+}
