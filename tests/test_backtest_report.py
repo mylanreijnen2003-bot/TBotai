@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from tbot.strategies import STRATEGIES
 from tbot.backtest import run_backtest, write_results
 from tbot.engine import new_portfolios, step
 from tbot.features import Features
@@ -10,7 +11,7 @@ from tbot.report import metrics, paired_test
 def test_backtest_runs_end_to_end(tmp_path, cfg, market):
     res = run_backtest(market, cfg, start="2021-01-01")
     eq = res["equity"]
-    assert list(eq.columns) == ["S1", "S2", "S3", "S4", "B1", "B2"]
+    assert list(eq.columns) == STRATEGIES
     assert len(eq) > 300
     assert (eq > 0).all().all()
     assert (res["exposure"] <= 1 + 1e-9).all().all()      # nooit hefboom
@@ -58,3 +59,16 @@ def test_paired_test_detects_clear_difference():
     assert p["p_mean"] < 0.01
     same = paired_test(b, b, n_boot=200)
     assert same["p_mean"] >= 0.4
+
+
+def test_evaluate_writes_verdicts(cfg, market):
+    from tbot.evaluate import deflated_sharpe, evaluate
+
+    base = run_backtest(market, cfg, start="2021-01-01")
+    stress = run_backtest(market, cfg, start="2021-01-01", cost=0.006)
+    text, verdicts = evaluate(base, stress, cfg, {0: base["equity"]["S8"]})
+    assert set(verdicts) == {"S7", "S8", "S9", "S10"}
+    assert "Beoordeling" in text
+    rets = base["equity"][["S1", "S4", "S7"]].pct_change()
+    d = deflated_sharpe(rets, "S4", 10)
+    assert 0 <= d <= 1

@@ -37,3 +37,22 @@ live:
   fear_greed: true         # alleen loggen, geen signaal
   funding: true            # alleen loggen, geen signaal (best effort)
 
+
+# ---- S7–S10, vastgelegd 1 okt 2026 vóór de backtest (zie HYPOTHESIS.md) ----
+s7:
+  regime_symbol: BTC/EUR
+  sma: 200
+s8:
+  symbols: [BTC/EUR, ETH/EUR]
+  lookbacks: [28, 84]      # dagen
+  sma: 200
+  weekday: 0               # uitvoering maandag-open (signaal zondagslot)
+s9:
+  entry_n: 20
+  exit_n: 40
+  atr_mult: 2.0
+  max_weight_mult: 1.5     # max 1,5/N per munt
+s10:
+  symbol: BTC/EUR
+  smas: [100, 200, 350]
+n_trials: 10               # geteste varianten (S1–S10) voor de deflated Sharpe

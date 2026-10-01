@@ -23,7 +23,7 @@ from .engine import new_portfolios, step
 from .features import Features
 from .ledger import Ledger
 from .report import summary_markdown
-from .strategies import STRATEGIES
+from .strategies import STRATEGIES, extra_symbols
 from .universe import select_universe
 
 
@@ -111,14 +111,15 @@ def run_live(
         log(f"Universum ({len(universe)}): {', '.join(universe)}")
 
         # --- koersen -----------------------------------------------------
-        needed = set(universe) | {cfg["benchmark_btc_symbol"]}
+        needed = set(universe) | extra_symbols(cfg)
         for pf in pfs.values():
             needed |= set(pf.qty)
-        closes, prices, stale, windows = {}, {}, [], []
+        closes, highs, lows, prices, stale, windows = {}, {}, {}, {}, [], []
         for sym in sorted(needed):
             df = source.fetch_daily(sym, days=cfg["live"]["history_days"])
             done = closed_only(df, today)
             closes[sym] = done["close"]
+            highs[sym], lows[sym] = done["high"], done["low"]
             if len(done) == 0 or done.index[-1] != t:
                 stale.append(sym)
             if today in df.index and df.loc[today, "open"] > 0:
@@ -135,7 +136,7 @@ def run_live(
         if stale:
             log(f"Let op: geen slotkoers van {bar} voor {', '.join(stale)}")
 
-        feats = Features(closes, cfg)
+        feats = Features(closes, cfg, highs, lows)
         res = step(t, today, prices, universe, feats, pfs, cfg, first_day, uday)
 
         # --- vastleggen --------------------------------------------------

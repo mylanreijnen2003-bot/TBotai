@@ -54,3 +54,39 @@ def trend_fraction(closes: pd.Series, lookbacks: list[int]) -> float:
         return 0.0
     st = donchian_states(closes, lookbacks)
     return float(st.iloc[-1].sum() / len(lookbacks))
+
+
+def keltner_states(close: pd.Series, high: pd.Series, low: pd.Series, entry_n: int = 20, exit_n: int = 40,
+                   mult: float = 2.0) -> pd.Series:
+    """Aan/uit-toestand voor S9 (Keltner/Donchian met ratchet-stop), per dag.
+
+    Upper_t = min(hoogste slot over entry_n dagen t/m t, EMA_entry_n + mult × ATR_entry_n)
+    Lower_t = max(laagste slot over exit_n dagen t/m t, EMA_exit_n − mult × ATR_exit_n)
+    Instap:  uit en close_t ≥ Upper_{t−1}  → aan, stop = Lower_t
+    In positie: close_t < stop_{t−1} → uit; anders stop = max(stop, Lower_t)  (stop gaat nooit omlaag)
+    ATR = gewoon gemiddelde van de True Range; EMA = exponentieel gemiddelde (span n, adjust=False).
+    """
+    c = close.astype(float)
+    h = high.reindex(c.index).astype(float).fillna(c)
+    lo = low.reindex(c.index).astype(float).fillna(c)
+    prev = c.shift(1)
+    tr = pd.concat([h - lo, (h - prev).abs(), (lo - prev).abs()], axis=1).max(axis=1)
+    atr_e = tr.rolling(entry_n, min_periods=entry_n).mean()
+    atr_x = tr.rolling(exit_n, min_periods=exit_n).mean()
+    ema_e = c.ewm(span=entry_n, adjust=False).mean()
+    ema_x = c.ewm(span=exit_n, adjust=False).mean()
+    upper = np.minimum(c.rolling(entry_n, min_periods=entry_n).max(), ema_e + mult * atr_e).to_numpy()
+    lower = np.maximum(c.rolling(exit_n, min_periods=exit_n).min(), ema_x - mult * atr_x).to_numpy()
+    cv = c.to_numpy()
+    out = np.zeros(len(cv), dtype=np.int8)
+    state, stop = 0, np.nan
+    for t in range(1, len(cv)):
+        if state == 1:
+            if cv[t] < stop:
+                state, stop = 0, np.nan
+            elif not np.isnan(lower[t]):
+                stop = max(stop, lower[t])
+        elif not np.isnan(upper[t - 1]) and not np.isnan(lower[t]) and cv[t] >= upper[t - 1]:
+            state, stop = 1, lower[t]
+        out[t] = state
+    return pd.Series(out, index=c.index)

@@ -99,6 +99,25 @@ Eigen logboek in `state_4h/`, draait elke 4 uur. Raakt S1–S5 niet.
 - De drempel 60% en de lookback 20 zijn eigen keuzes, niet uit een bron.
 - Totaal geteste varianten nu: 6 (S1–S6).
 
+## Aanvulling 1 oktober 2026 (middag) — S7 t/m S10, gericht op ≥20% per jaar
+Vastgelegd vóór de backtest. Regels en getallen staan in `config.yaml` (s7–s10). Live vanaf de eerstvolgende run.
+Bron S7–S9: onderzoek "drie nieuwe spot-strategieën" (1 okt 2026). S10 is opgesteld ná een snelle verkenning
+op de BTC-reeks (100/200/350-daags gemiddelde) en telt daarom als zwakker bewijs.
+
+- **S7 — S4 × BTC-regime:** S4-doelgewichten × R_t, R_t = 1 als BTC/EUR-slot > SMA200 (gewoon 200-daags gemiddelde), anders 0. Dagelijks, band 20%.
+- **S8 — BTC/ETH traag momentum:** per munt s1 = slot_t > slot_(t−28), s2 = slot_t > slot_(t−84), s3 = slot_t > SMA200; w = ½ × (s1+s2+s3)/3, rest cash. Alleen bijsturen op maandag-open (signaal zondagslot), zonder band. Robuustheid: zelfde regels met elke weekdag; het CAGR-criterium gebruikt het gemiddelde van de 7 varianten.
+- **S9 — Keltner/Donchian met ratchet-stop:** universum = top-15. Upper = min(hoogste slot 20d, EMA20 + 2·ATR20); Lower = max(laagste slot 40d, EMA40 − 2·ATR40). Instap: slot_t ≥ Upper_(t−1); stop = max(stop, Lower_t), nooit omlaag; uitstap: slot_t < stop_(t−1). w = min(1,5/N; (1/N)/σ90), totaal ≤ 100%. Band 20% (instap/uitstap altijd).
+- **S10 — BTC-cyclus:** w_BTC = aantal van [slot > SMA100, SMA200, SMA350] / 3. Dagelijks, band 20%.
+
+### Doelen (H7–H10), elk geldt pas als ALLE punten gehaald zijn
+- CAGR ≥ 20% bij 0,30% kosten (backtest maart 2020 t/m sept 2026; S8: gemiddelde van de 7 weekdagvarianten).
+- Max drawdown ≤ 30% (S7), ≤ 35% (S8, S9), ≤ 2/3 van die van B1 (S10).
+- CAGR ≥ 15% bij 0,60% kosten.
+- Holdout (vanaf april 2025) CAGR ≥ 0% én ≥ B1. Let op: deze periode is al gezien, dus dit is een extra check, geen schone test.
+- Deflated Sharpe ≥ 0,90 met N = 10 geteste varianten (S1–S10).
+- Uitkomst wordt automatisch geschreven naar `results/hypotheses.md`.
+- Wat zakt, gaat eruit. Wat slaagt, draait minimaal 12 maanden live op nepgeld voordat er iets met echt geld gebeurt.
+
 ## Afgevallen op 1 oktober 2026 (backtest, vóór live-start)
 Volgens de vooraf vastgelegde hypotheses verwijderd. Ze tellen mee als geteste varianten.
 - **S5 (BTC-trend):** H5 niet gehaald — CAGR 27,2% tegen 39,9% voor B1, max drawdown −47% (grens: 60% van B1 = −44%).

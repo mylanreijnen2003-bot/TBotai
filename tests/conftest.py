@@ -66,6 +66,7 @@ def market():
     for i in range(20):
         coins[f"C{i:02d}/EUR"] = make_candles(n=1100, seed=i, drift=0.0003 * (i % 5 - 1), volume=1000 + 100 * i)
     coins["BTC/EUR"] = make_candles(n=1100, seed=99, drift=0.0008, volume=50_000, price=30_000)
+    coins["ETH/EUR"] = make_candles(n=1100, seed=98, drift=0.0005, volume=10, price=2_000)
     stable = make_candles(n=1100, seed=5, vol=0.0005, drift=0.0, volume=1e9, price=1.0)
     coins["USDC/EUR"] = stable
     return coins

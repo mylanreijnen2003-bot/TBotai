@@ -24,7 +24,7 @@ from .engine import step
 from .features import Features
 from .ledger import Ledger
 from .portfolio import Portfolio
-from .strategies import STRATEGIES
+from .strategies import STRATEGIES, extra_symbols
 
 REL_TOL = 1e-6
 
@@ -37,7 +37,7 @@ def _close(a: float, b: float, tol: float = REL_TOL) -> bool:
 
 def symbols_needed(ledger: Ledger, cfg: dict) -> list[str]:
     """Alle munten die de live-run ooit nodig had."""
-    syms = {cfg["benchmark_btc_symbol"]}
+    syms = set(extra_symbols(cfg))
     for (symbols,) in ledger.db.execute("SELECT symbols FROM universe"):
         syms |= set(json.loads(symbols))
     syms |= {r[0] for r in ledger.db.execute("SELECT DISTINCT symbol FROM trades")}
@@ -94,7 +94,7 @@ def replay(ledger: Ledger, candles: dict[str, pd.DataFrame], cfg: dict) -> dict:
                 live_state[n] = Portfolio(n, start_cap)
         sim = {n: copy.deepcopy(live_state[n]) for n in first_day}
 
-        needed = set(universe) | {cfg["benchmark_btc_symbol"]}
+        needed = set(universe) | extra_symbols(cfg)
         for pf in sim.values():
             needed |= set(pf.qty)
 
@@ -107,7 +107,7 @@ def replay(ledger: Ledger, candles: dict[str, pd.DataFrame], cfg: dict) -> dict:
                 f"(alleen live: {sorted(set(w.index) - needed)}, alleen herberekening: {sorted(needed - set(w.index))})"
             )
 
-        closes, prices, missing = {}, {}, []
+        closes, highs, lows, prices, missing = {}, {}, {}, {}, []
         for s in sorted(needed):
             df = candles.get(s)
             if df is None or df.empty:
@@ -119,6 +119,7 @@ def replay(ledger: Ledger, candles: dict[str, pd.DataFrame], cfg: dict) -> dict:
                 lo, hi = fill - pd.Timedelta(days=hist + 1), t
             done = df[(df.index >= lo) & (df.index <= min(hi, t))]
             closes[s] = done["close"]
+            highs[s], lows[s] = done["high"], done["low"]
             if fill in df.index and df.loc[fill, "open"] > 0:
                 prices[s] = float(df.loc[fill, "open"])
             elif len(done):
@@ -130,7 +131,7 @@ def replay(ledger: Ledger, candles: dict[str, pd.DataFrame], cfg: dict) -> dict:
             skipped.append(date)
             res = {}
         else:
-            res = step(t, fill, prices, universe, Features(closes, cfg), sim, cfg, first_day, uday)
+            res = step(t, fill, prices, universe, Features(closes, cfg, highs, lows), sim, cfg, first_day, uday)
 
         for n, r in res.items():
             mine = {(tr.symbol, tr.side): tr for tr in r.trades}

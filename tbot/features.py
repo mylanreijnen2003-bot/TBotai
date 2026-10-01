@@ -8,7 +8,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .indicators import donchian_states
+from .indicators import donchian_states, keltner_states
 
 
 def asof(s: pd.Series | None, t) -> float:
@@ -20,11 +20,16 @@ def asof(s: pd.Series | None, t) -> float:
 
 
 class Features:
-    def __init__(self, closes: dict[str, pd.Series], cfg: dict):
+    def __init__(self, closes: dict[str, pd.Series], cfg: dict,
+                 highs: dict[str, pd.Series] | None = None, lows: dict[str, pd.Series] | None = None):
         self.cfg = cfg
         self.closes = {s: c.dropna().sort_index() for s, c in closes.items() if c is not None and len(c.dropna())}
+        self.highs = highs or {}
+        self.lows = lows or {}
         self._sigma: dict[str, pd.Series] = {}
         self._trend: dict[str, pd.Series] = {}
+        self._sma: dict[tuple[str, int], pd.Series] = {}
+        self._kelt: dict[str, pd.Series] = {}
 
     def has(self, sym: str) -> bool:
         return sym in self.closes
@@ -58,3 +63,35 @@ class Features:
             self._trend[sym] = donchian_states(c, lbs).sum(axis=1) / len(lbs)
         v = asof(self._trend[sym], t)
         return 0.0 if np.isnan(v) else v
+
+    def sma(self, sym: str, t: pd.Timestamp, n: int) -> float:
+        """Gewoon gemiddelde van de laatste n slotkoersen t/m t (NaN bij te weinig historie)."""
+        key = (sym, n)
+        if key not in self._sma:
+            c = self.closes.get(sym)
+            if c is None:
+                return float("nan")
+            self._sma[key] = c.rolling(n, min_periods=n).mean()
+        return asof(self._sma[key], t)
+
+    def keltner_on(self, sym: str, t: pd.Timestamp) -> bool:
+        """S9-toestand (Keltner/Donchian met ratchet-stop) op dag t."""
+        if sym not in self._kelt:
+            c = self.closes.get(sym)
+            if c is None:
+                return False
+            k = self.cfg["s9"]
+            hi = self.highs.get(sym, c)
+            lo = self.lows.get(sym, c)
+            self._kelt[sym] = keltner_states(c, hi, lo, k["entry_n"], k["exit_n"], k["atr_mult"]).astype(float)
+        return asof(self._kelt[sym], t) == 1.0
+
+
+def from_candles(candles: dict[str, pd.DataFrame], cfg: dict) -> "Features":
+    """Features uit OHLCV-tabellen (slot, hoog, laag)."""
+    return Features(
+        {s: d["close"] for s, d in candles.items()},
+        cfg,
+        {s: d["high"] for s, d in candles.items() if "high" in d},
+        {s: d["low"] for s, d in candles.items() if "low" in d},
+    )

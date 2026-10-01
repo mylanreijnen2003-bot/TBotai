@@ -6,7 +6,7 @@ Regels:
 - Elke wijziging = nieuwe strategieversie (v2 …) die opnieuw vanaf nul getest wordt. Resultaten van versies worden niet opgeteld.
 - Houd bij hoeveel varianten er in totaal zijn geprobeerd (voor de deflated Sharpe).
 
-Aantal geteste varianten tot nu toe: 6 (S1–S3 vanaf 30 sept, S4–S5 vanaf 2 okt, S6 4-uurs vanaf 1 okt 2026).
+Aantal geteste varianten tot nu toe: 10 (S1–S10; S5 en S6 afgevallen).
 
 ## Log
 <!-- Formaat: YYYY-MM-DD — observatie/hypothese — onderbouwing (aantal trades, periode) -->
@@ -16,3 +16,4 @@ Aantal geteste varianten tot nu toe: 6 (S1–S3 vanaf 30 sept, S4–S5 vanaf 2 o
 - 2026-10-01 — Backtest na data-fix (incl. later genoteerde munten). S4: CAGR 29,7%, max drawdown −45% (B2: 12,7% / −90%). S5: 27,2% / −47% (B1: 39,9% / −74%). Holdout vanaf apr 2025: S4 +4,2% en S1 +2,5% tegen B1 −2,2% en B2 −18,7%.
 - 2026-10-01 — S6 (4-uurs) haalt H6 niet: bij 0,30% kosten −1,8%/jaar (2021-08 t/m 2026-09), holdout −30%/jaar. 772 trades, 30% winstgevend, gem. +0,10% per trade na kosten. Bij 0,15% (limietorders) +13,9%/jaar, bij 0,60% −27%/jaar: de kosten bepalen de uitkomst. Volgens de vooraf afgesproken regel stoppen.
 - 2026-10-01 — Cursussen Miles Deutscher (7-daagse AI-tradingbot + Free Markets Assets Library) doorgenomen. Niet overgenomen: (1) "stop na één verlies"-geheugen (hun eigen veiligheidsgids raadt dit af; trendvolgen verdient juist aan weinig grote winnaars), (2) een LLM in de beslisketen (TradingAgents, Jev, Claude-bias; geen bewijs na kosten, uitkomsten niet herhaalbaar), (3) EMA 9/21 op BTC-dag ("beste van 12" = selectie-bias; lijkt op S5, dat H5 niet haalde). Wel overgenomen, zonder regelwijziging: wekelijkse controle live vs. dezelfde code, meldingen bij gemiste dagen en oude koersen, tests met vooraf uitgerekende uitkomst. Aantal geteste varianten blijft 6.
+- 2026-10-01 — Snelle verkenning BTC-cyclusfilters (0,30% kosten, sept 2020 t/m sept 2026): BTC vasthouden 42%/jaar (−74%); boven SMA100 43% (−54%); SMA200 36% (−62%); SMA350 18% (−51%). Perfecte timing achteraf ×45 (88%/jaar) als plafond. Vanaf feb 2021 haalt BTC vasthouden maar 8,7%/jaar: de startdatum bepaalt veel. Daarom S10 als ensemble van alle drie, niet de beste losse.

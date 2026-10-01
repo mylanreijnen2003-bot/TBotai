@@ -12,9 +12,9 @@ from pathlib import Path
 import pandas as pd
 
 from .engine import new_portfolios, step
-from .features import Features, asof
+from .features import asof, from_candles
 from .report import metrics, summary_markdown
-from .strategies import STRATEGIES
+from .strategies import STRATEGIES, extra_symbols
 from .universe import is_universe_day, select_universe
 
 HOLDOUT_START = pd.Timestamp("2025-04-01")  # S1-paper loopt t/m maart 2025
@@ -26,22 +26,24 @@ def run_backtest(
     start: str | pd.Timestamp = "2020-01-01",
     end: str | pd.Timestamp | None = None,
     cost: float | None = None,
+    only: list[str] | None = None,
 ) -> dict:
+    """`only`: alleen deze portefeuilles doorrekenen (bijv. voor robuustheidsvarianten)."""
     cost = cfg["cost_per_side"] if cost is None else cost
     candles = {s: df.sort_index() for s, df in candles.items() if df is not None and len(df)}
     opens = {s: df["open"] for s, df in candles.items()}
-    feats = Features({s: df["close"] for s, df in candles.items()}, cfg)
+    feats = from_candles(candles, cfg)
 
     all_dates = sorted(set().union(*[df.index for df in candles.values()]))
     start = pd.Timestamp(start)
     last = all_dates[-1] if end is None else min(pd.Timestamp(end), all_dates[-1])
     days = [d for d in all_dates if start <= d < last]  # t; fill = t + 1 moet bestaan
 
-    pfs = new_portfolios(cfg)
+    pfs = {n: p for n, p in new_portfolios(cfg).items() if only is None or n in only}
     universe: list[str] = []
     started = False
     eq_rows, ex_rows = {}, {}
-    traded = {n: 0.0 for n in STRATEGIES}
+    traded = {n: 0.0 for n in pfs}
     trade_log = []
 
     for t in days:
@@ -54,7 +56,7 @@ def run_backtest(
         first_day = not started
         started = True
 
-        needed = set(universe) | {cfg["benchmark_btc_symbol"]}
+        needed = set(universe) | extra_symbols(cfg)
         for pf in pfs.values():
             needed |= set(pf.qty)
         prices = {}

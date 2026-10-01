@@ -44,10 +44,29 @@ def main(argv: list[str] | None = None) -> int:
         if not candles:
             print("Geen data. Draai eerst: python run.py download")
             return 1
+        import copy
+        import json
+
+        from tbot.evaluate import evaluate
+
+        runs = {}
         for label, cost in [("base", cfg["cost_per_side"]), ("stress", cfg["stress_cost_per_side"])]:
-            res = run_backtest(candles, cfg, start=args.start, cost=cost)
-            write_results(res, cfg, ROOT / "results", label)
+            runs[label] = run_backtest(candles, cfg, start=args.start, cost=cost)
+            write_results(runs[label], cfg, ROOT / "results", label)
             print(f"backtest {label} klaar -> results/backtest_{label}.md")
+        # S8-robuustheid: dezelfde regels met elke weekdag als uitvoeringsdag
+        variants = {cfg["s8"]["weekday"]: runs["base"]["equity"]["S8"]}
+        for d in range(7):
+            if d in variants:
+                continue
+            c2 = copy.deepcopy(cfg)
+            c2["s8"]["weekday"] = d
+            variants[d] = run_backtest(candles, c2, start=args.start, only=["S8"])["equity"]["S8"]
+            print(f"S8 weekdag {d} klaar")
+        text, verdicts = evaluate(runs["base"], runs["stress"], cfg, variants)
+        (ROOT / "results" / "hypotheses.md").write_text(text, encoding="utf-8")
+        (ROOT / "results" / "hypotheses.json").write_text(json.dumps(verdicts, indent=2), encoding="utf-8")
+        print(text)
         return 0
 
     if args.command == "verify":
