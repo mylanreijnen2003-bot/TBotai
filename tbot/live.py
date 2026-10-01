@@ -204,7 +204,10 @@ def _write_summary(ledger: Ledger, state_dir: Path) -> None:
         f"Start: {start}. Een paper-test van maanden controleert code en kosten; hij wijst géén winnaar aan.",
         "",
     ]
-    body = summary_markdown(eq, ex, traded, "Resultaten sinds start") if not eq.empty else "Nog geen data.\n"
+    from .config import load_config
+
+    cap = float(load_config()["start_capital_eur"])
+    body = summary_markdown(eq, ex, traded, "Resultaten sinds start", cap) if not eq.empty else "Nog geen data.\n"
     (state_dir / "summary.md").write_text("\n".join(head) + body, encoding="utf-8")
 
 

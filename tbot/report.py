@@ -86,7 +86,9 @@ def fmt_num(x) -> str:
     return "–" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x:.2f}"
 
 
-def summary_markdown(equity: pd.DataFrame, exposure: pd.DataFrame | None, traded: dict, title: str) -> str:
+def summary_markdown(
+    equity: pd.DataFrame, exposure: pd.DataFrame | None, traded: dict, title: str, start_capital: float | None = None
+) -> str:
     """Tabel per portefeuille + de hypothesetoetsen H1-H3."""
     lines = [f"## {title}", ""]
     if equity.empty or len(equity) < 2:
@@ -97,6 +99,23 @@ def summary_markdown(equity: pd.DataFrame, exposure: pd.DataFrame | None, traded
         "| Portefeuille | Eindwaarde | CAGR | Sharpe | Max drawdown | Calmar | Gem. belegd | Omzet/jaar |",
         "|---|---|---|---|---|---|---|---|",
     ]
+    days = (equity.index[-1] - equity.index[0]).days
+    if days < 90:
+        # jaarcijfers (CAGR, Sharpe, omzet/jaar) zijn bij zo weinig dagen betekenisloos
+        lines[-2:] = [
+            "| Portefeuille | Eindwaarde | Rendement | Max drawdown | Belegd nu |",
+            "|---|---|---|---|---|",
+        ]
+        for col in equity.columns:
+            e = equity[col].dropna()
+            base = start_capital or e.iloc[0]
+            ex_now = exposure[col].dropna().iloc[-1] if exposure is not None and col in exposure else float("nan")
+            lines.append(
+                f"| {col} | €{e.iloc[-1]:,.0f} | {fmt_pct(e.iloc[-1] / base - 1)} | "
+                f"{fmt_pct(float((e / e.cummax() - 1).min()))} | {fmt_pct(ex_now)} |"
+            )
+        lines += ["", f"Rendement is inclusief kosten, gemeten vanaf het startkapitaal. Jaarcijfers en hypothesetoetsen verschijnen na 90 dagen (nu {days})."]
+        return "\n".join(lines + [""])
     m = {}
     for col in equity.columns:
         ex = exposure[col] if exposure is not None and col in exposure else None
