@@ -1,0 +1,12 @@
+430 markten opgeslagen
+backtest base klaar -> results/backtest_base.md
+backtest stress klaar -> results/backtest_stress.md
+BTC/EUR: 14791 candles vanaf 2020-01-01 00:00:00
+ETH/EUR: 14791 candles vanaf 2020-01-01 00:00:00
+SOL/EUR: 11308 candles vanaf 2021-08-03 12:00:00
+BTC/EUR: 14791 candles (2020-01-01 00:00:00 t/m 2026-10-01 04:00:00)
+ETH/EUR: 14791 candles (2020-01-01 00:00:00 t/m 2026-10-01 04:00:00)
+SOL/EUR: 11308 candles (2021-08-03 12:00:00 t/m 2026-10-01 04:00:00)
+backtest 4u 15bp klaar -> results/backtest_4h_15bp.md
+backtest 4u 30bp klaar -> results/backtest_4h_30bp.md
+backtest 4u 60bp klaar -> results/backtest_4h_60bp.md
