@@ -55,8 +55,8 @@ def main(argv: list[str] | None = None) -> int:
             write_results(runs[label], cfg, ROOT / "results", label)
             print(f"backtest {label} klaar -> results/backtest_{label}.md")
         # S8-robuustheid: dezelfde regels met elke weekdag als uitvoeringsdag
-        variants = {cfg["s8"]["weekday"]: runs["base"]["equity"]["S8"]}
-        for d in range(7):
+        variants = {cfg["s8"]["weekday"]: runs["base"]["equity"]["S8"]} if "S8" in runs["base"]["equity"] else {}
+        for d in (range(7) if variants else []):
             if d in variants:
                 continue
             c2 = copy.deepcopy(cfg)

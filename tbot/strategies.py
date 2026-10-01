@@ -12,7 +12,9 @@ import pandas as pd
 
 from .features import Features
 
-STRATEGIES = ["S1", "S2", "S3", "S4", "S7", "S8", "S9", "S10", "B1", "B2"]
+# Actieve portefeuilles. S7–S9 zijn op 1 okt 2026 afgevallen (H7–H9); hun regels blijven hieronder staan
+# zodat de uitkomst herhaalbaar is, maar ze draaien niet meer mee.
+STRATEGIES = ["S1", "S2", "S3", "S4", "S10", "B1", "B2"]
 
 
 def _vol_scale(feats: Features, sym: str, t, cfg) -> float:

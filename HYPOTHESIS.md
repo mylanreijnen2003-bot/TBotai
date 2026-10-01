@@ -123,6 +123,11 @@ Volgens de vooraf vastgelegde hypotheses verwijderd. Ze tellen mee als geteste v
 - **S5 (BTC-trend):** H5 niet gehaald — CAGR 27,2% tegen 39,9% voor B1, max drawdown −47% (grens: 60% van B1 = −44%).
 - **S6 (4-uurs trendsprongen):** H6 niet gehaald — bij 0,30% kosten −1,8% per jaar (2021-08 t/m 2026-09), holdout −30% per jaar; 772 trades, 30% winstgevend.
 - Details in `results/` en `learnings.md`. Code staat in de git-geschiedenis.
+- **S7 (S4 × BTC-regime):** H7 niet gehaald — max drawdown −44,9% (grens 30%). CAGR 29,0%.
+- **S8 (BTC/ETH traag momentum):** H8 niet gehaald — max drawdown −40,6% (grens 35%). CAGR 44,7% (gemiddelde 7 weekdagen, spreiding 37–54%).
+- **S9 (Keltner/Donchian):** H9 niet gehaald — max drawdown −70,7% (grens 35%) en deflated Sharpe 0,80 (< 0,90).
+- **S10 (BTC-cyclus):** H10 gehaald — CAGR 39,5%, max drawdown −45,7%, bij 0,60% kosten 35,8%, holdout +4,5% (B1 −2,2%), DSR 0,96. Blijft live.
+- Regels van S7–S9 staan nog in `tbot/strategies.py` (niet actief) zodat de uitkomst herhaalbaar is.
 
 ## Alleen loggen, niet gebruiken
 Fear & Greed Index en BTC-funding rate worden dagelijks met tijdstempel opgeslagen (`state/observations.csv`) voor een latere, eerlijke A/B-test in een volgende versie.
