@@ -70,6 +70,9 @@ def run_live(
         log(f"Dag {bar} is al verwerkt; niets te doen.")
         return "skip"
 
+    prev_ok = ledger.ok_bars()
+    gap = missed_between(prev_ok[-1], bar) if prev_ok else []
+
     try:
         pfs = ledger.load_portfolios()
         first_run = not pfs
@@ -111,7 +114,7 @@ def run_live(
         needed = set(universe) | {cfg["benchmark_btc_symbol"]}
         for pf in pfs.values():
             needed |= set(pf.qty)
-        closes, prices, stale = {}, {}, []
+        closes, prices, stale, windows = {}, {}, [], []
         for sym in sorted(needed):
             df = source.fetch_daily(sym, days=cfg["live"]["history_days"])
             done = closed_only(df, today)
@@ -122,6 +125,13 @@ def run_live(
                 prices[sym] = float(df.loc[today, "open"])  # open van vandaag = uitvoeringsprijs
             elif len(done):
                 prices[sym] = float(done["close"].iloc[-1])
+            # vastleggen welke data deze run gebruikte (voor de controle live vs. backtest)
+            windows.append((
+                sym,
+                done.index[0].date().isoformat() if len(done) else "",
+                done.index[-1].date().isoformat() if len(done) else "",
+                prices.get(sym, float("nan")),
+            ))
         if stale:
             log(f"Let op: geen slotkoers van {bar} voor {', '.join(stale)}")
 
@@ -130,7 +140,14 @@ def run_live(
 
         # --- vastleggen --------------------------------------------------
         date = today.date().isoformat()
+        ledger.add_data_windows(date, windows)
         lines = [f"TBotai {date} (signaal {bar})"]
+        if gap:
+            lines.append(
+                f"⚠️ Gemiste dag(en): {_fmt_days(gap)}. Die dagen is niets gebeurd (wordt niet ingehaald)."
+            )
+        if stale:
+            lines.append(f"⚠️ Geen verse slotkoers van {bar} voor: {', '.join(stale)} (oude koers gebruikt).")
         for name in STRATEGIES:
             r = res[name]
             pf = pfs[name]
@@ -166,7 +183,12 @@ def run_live(
         if alarm:
             lines.append(alarm)
 
-        ledger.record_run(bar, now_iso, "ok", "")
+        note = []
+        if gap:
+            note.append(f"gemist: {_fmt_days(gap)}")
+        if stale:
+            note.append(f"oude koers: {', '.join(stale)}")
+        ledger.record_run(bar, now_iso, "ok", "; ".join(note)[:1000])
         ledger.commit()
 
         # herhaalde controle na het wegschrijven
@@ -190,6 +212,27 @@ def run_live(
         return "error"
 
 
+def missed_between(last_ok: str, bar: str) -> list[str]:
+    """Signaaldagen strikt tussen de laatst verwerkte dag en `bar` (dagen zonder geslaagde run)."""
+    days = pd.date_range(pd.Timestamp(last_ok) + pd.Timedelta(days=1), pd.Timestamp(bar) - pd.Timedelta(days=1))
+    return [d.date().isoformat() for d in days]
+
+
+def missed_since_start(ok: list[str]) -> list[str]:
+    """Alle dagen tussen de eerste en laatste geslaagde run waarop geen geslaagde run was."""
+    if len(ok) < 2:
+        return []
+    have = set(ok)
+    days = pd.date_range(pd.Timestamp(ok[0]), pd.Timestamp(ok[-1]))
+    return [d.date().isoformat() for d in days if d.date().isoformat() not in have]
+
+
+def _fmt_days(days: list[str]) -> str:
+    if len(days) <= 3:
+        return ", ".join(days)
+    return f"{len(days)} dagen ({days[0]} t/m {days[-1]})"
+
+
 def _equity_frames(ledger: Ledger) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     df = pd.read_sql_query("SELECT * FROM equity", ledger.db, parse_dates=["date"])
     if df.empty:
@@ -209,6 +252,13 @@ def _write_summary(ledger: Ledger, state_dir: Path) -> None:
         "# Live paper-test — stand van zaken",
         "",
         f"Start: {start}. Een paper-test van maanden controleert code en kosten; hij wijst géén winnaar aan.",
+        "",
+    ]
+    ok = ledger.ok_bars()
+    missed = missed_since_start(ok)
+    head += [
+        f"Runs: {len(ok)} dagen verwerkt"
+        + (f", {len(missed)} gemist ({_fmt_days(missed)})." if missed else ", geen dag gemist."),
         "",
     ]
     starts = ledger.get_meta("strategy_start", {}) or {}

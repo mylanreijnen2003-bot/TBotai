@@ -9,6 +9,8 @@ Test vooraf vastgelegde crypto-strategieën (nu S1–S4) met **nepgeld** en echt
 ## Hoe het draait
 - **Elke dag 00:17 UTC** start GitHub Actions (`paper-run`) de bot: signaal op het slot van gisteren, uitvoering tegen de open van vandaag, alles opgeslagen in `state/`.
 - **Backtest:** handmatig via Actions → `backtest` → Run workflow.
+- **Controle (elke maandag):** `verify` rekent alle live-dagen opnieuw uit met dezelfde code en vergelijkt elke trade, uitvoeringsprijs en equity. Uitkomst in `results/verify_live.md`; bij een verschil volgt een Telegram-melding.
+- **Meldingen per run:** gemiste dagen en munten zonder verse slotkoers staan in het Telegram-bericht en in `state/summary.md`.
 - **Tests:** draaien bij elke codewijziging.
 
 ## Noodstop
@@ -24,6 +26,7 @@ python -m pytest -q          # tests
 python run.py live           # één dag paper-run
 python run.py download       # koersdata voor de backtest
 python run.py backtest       # backtest
+python run.py verify         # live-dagen opnieuw uitrekenen en vergelijken
 ```
 
 ## Bestanden
@@ -35,4 +38,5 @@ python run.py backtest       # backtest
 | `tbot/live.py` | de dagelijkse run |
 | `tbot/backtest.py` | backtest met dezelfde code |
 | `tbot/ledger.py` | logboek (SQLite) en reconciliatie |
+| `tbot/verify.py` | controle: live-run tegen dezelfde code opnieuw uitgerekend |
 | `learnings.md` | observaties en hypotheses (worden níét automatisch toegepast) |

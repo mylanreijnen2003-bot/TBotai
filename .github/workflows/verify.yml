@@ -1,0 +1,51 @@
+name: verify
+
+# Elke maandag: alle live-dagen opnieuw uitrekenen met dezelfde code en vergelijken.
+# Bij een verschil: Telegram-melding en deze workflow faalt (GitHub mailt dan ook).
+on:
+  schedule:
+    - cron: "37 3 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: verify
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Controle live vs. code
+        id: verify
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python run.py verify
+
+      - name: Rapport opslaan
+        if: always()
+        run: |
+          git config user.name "tbotai-bot"
+          git config user.email "tbotai-bot@users.noreply.github.com"
+          git add results/verify_live.md || true
+          if git diff --cached --quiet; then
+            echo "Geen wijzigingen"
+            exit 0
+          fi
+          git commit -m "controle live $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep 7
+          done
+          exit 1

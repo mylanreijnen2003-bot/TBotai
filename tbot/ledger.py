@@ -31,15 +31,24 @@ CREATE TABLE IF NOT EXISTS decisions (
     PRIMARY KEY (strategy, date, symbol));
 CREATE TABLE IF NOT EXISTS observations (
     date TEXT, name TEXT, value REAL, extra TEXT, fetched_at TEXT, PRIMARY KEY (date, name));
+CREATE TABLE IF NOT EXISTS data_windows (
+    date TEXT, symbol TEXT, first_bar TEXT, last_bar TEXT, exec_price REAL, PRIMARY KEY (date, symbol));
 """
 
 
 class Ledger:
-    def __init__(self, path: str | Path = ":memory:"):
+    def __init__(self, path: str | Path = ":memory:", readonly: bool = False):
+        if readonly:
+            # alleen lezen (controles): het bestand blijft byte-voor-byte gelijk
+            self.db = sqlite3.connect(f"file:{Path(path).as_posix()}?mode=ro", uri=True)
+            return
         if str(path) != ":memory:":
             Path(path).parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(str(path))
         self.db.executescript(SCHEMA)
+
+    def has_table(self, name: str) -> bool:
+        return self.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (name,)).fetchone() is not None
 
     # ---- meta ---------------------------------------------------------
     def get_meta(self, key: str, default=None):
@@ -56,6 +65,10 @@ class Ledger:
 
     def record_run(self, bar_date: str, run_time: str, status: str, message: str = "") -> None:
         self.db.execute("INSERT OR REPLACE INTO runs VALUES (?,?,?,?)", (bar_date, run_time, status, message))
+
+    def ok_bars(self) -> list[str]:
+        """Alle signaaldagen die met succes verwerkt zijn, oplopend."""
+        return [r[0] for r in self.db.execute("SELECT bar_date FROM runs WHERE status='ok' ORDER BY bar_date")]
 
     # ---- universe -----------------------------------------------------
     def get_universe(self, month: str) -> list[str] | None:
@@ -103,6 +116,12 @@ class Ledger:
     def add_decisions(self, strategy: str, date: str, rows: list[tuple[str, float, float, str]]) -> None:
         self.db.executemany(
             "INSERT OR REPLACE INTO decisions VALUES (?,?,?,?,?,?)", [(strategy, date, *r) for r in rows]
+        )
+
+    def add_data_windows(self, date: str, rows: list[tuple[str, str, str, float]]) -> None:
+        """Welke koershistorie (eerste/laatste slotdag) en uitvoeringsprijs de run per munt gebruikte."""
+        self.db.executemany(
+            "INSERT OR REPLACE INTO data_windows VALUES (?,?,?,?,?)", [(date, *r) for r in rows]
         )
 
     def add_observation(self, date: str, name: str, value: float, extra: str, fetched_at: str) -> None:

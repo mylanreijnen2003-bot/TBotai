@@ -93,3 +93,39 @@ def test_new_strategy_added_later(tmp_path, cfg, market):
     starts = led.get_meta("strategy_start")
     assert starts["S4"] != starts["S1"]
     assert s1_before is not None
+
+
+def test_missed_days_are_reported(tmp_path, cfg, market):
+    src = FakeSource(market)
+    idx = market["BTC/EUR"].index
+    assert _run(tmp_path, cfg, src, idx[700]) == "ok"
+    assert _run(tmp_path, cfg, src, idx[704]) == "ok"           # drie dagen geen run
+    led = Ledger(tmp_path / "state" / "ledger.db")
+    msg = led.db.execute("SELECT message FROM runs ORDER BY bar_date DESC LIMIT 1").fetchone()[0]
+    assert msg.startswith("gemist: ")
+    assert len(msg.split(": ")[1].split(", ")) == 3
+    assert "3 gemist" in (tmp_path / "state" / "summary.md").read_text()
+
+
+def test_stale_price_is_reported_and_data_window_logged(tmp_path, cfg, market):
+    idx = market["BTC/EUR"].index
+    src = FakeSource(market)
+    assert _run(tmp_path, cfg, src, idx[700]) == "ok"            # universum van deze maand vastgelegd
+    day = idx[701]
+    led = Ledger(tmp_path / "state" / "ledger.db")
+    month = day.strftime("%Y-%m")
+    sym = led.get_universe(month)[5]
+    # de beurs levert voor deze munt de laatste dagen geen nieuwe candle
+    market = dict(market)
+    market[sym] = market[sym][market[sym].index < day - pd.Timedelta(days=3)]
+    assert _run(tmp_path, cfg, FakeSource(market), day) == "ok"
+    led = Ledger(tmp_path / "state" / "ledger.db")
+    msg = led.db.execute("SELECT message FROM runs ORDER BY bar_date DESC LIMIT 1").fetchone()[0]
+    assert "oude koers" in msg and sym in msg
+    rows = led.db.execute(
+        "SELECT symbol, first_bar, last_bar, exec_price FROM data_windows WHERE date=?", (day.date().isoformat(),)
+    ).fetchall()
+    assert rows and all(r[3] > 0 for r in rows)
+    got = {r[0]: r for r in rows}
+    assert got["BTC/EUR"][2] == (day - pd.Timedelta(days=1)).date().isoformat()
+    assert got[sym][2] < (day - pd.Timedelta(days=1)).date().isoformat()
