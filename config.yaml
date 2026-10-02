@@ -55,4 +55,10 @@ s9:
 s10:
   symbol: BTC/EUR
   smas: [100, 200, 350]
-n_trials: 10               # geteste varianten (S1–S10) voor de deflated Sharpe
+n_trials: 12               # geteste varianten (S1–S10, M1, M2) voor de deflated Sharpe
+
+# ---- Mixen, vastgelegd 2 okt 2026 (gekozen ná het zien van de backtest; zie HYPOTHESIS.md) ----
+# Doelgewicht per munt = gewogen gemiddelde van de doelgewichten van de deelstrategieën.
+mixes:
+  M1: {S4: 0.3333333333333333, S8: 0.3333333333333333, S10: 0.3333333333333333}
+  M2: {S1: 0.5, S8: 0.5}

@@ -64,3 +64,30 @@ def test_s9_weights_capped(market, cfg):
     tg = s9_targets(t, u, f, cfg)
     assert all(0 <= w <= 1.5 / 15 + 1e-12 for w in tg.values())
     assert sum(tg.values()) <= 1 + 1e-12
+
+
+def test_mix_is_weighted_average(market, cfg):
+    from tbot.strategies import mix_targets, s1_targets, s8_latest_targets
+
+    f = Features({s: d["close"] for s, d in market.items()}, cfg)
+    t = market["BTC/EUR"].index[800]
+    fill = t + pd.Timedelta(days=1)
+    u = [f"C{i:02d}/EUR" for i in range(15)]
+    m2 = mix_targets("M2", t, fill, u, f, cfg)
+    a, b = s1_targets(t, u, f, cfg), s8_latest_targets(t, fill, f, cfg)
+    for s in set(a) | set(b):
+        assert abs(m2.get(s, 0) - (0.5 * a.get(s, 0) + 0.5 * b.get(s, 0))) < 1e-12
+    assert sum(m2.values()) <= 1 + 1e-9
+    m1 = mix_targets("M1", t, fill, u, f, cfg)
+    assert sum(m1.values()) <= 1 + 1e-9
+
+
+def test_s8_latest_uses_last_monday(market, cfg):
+    from tbot.strategies import s8_latest_targets
+
+    f = Features({s: d["close"] for s, d in market.items()}, cfg)
+    monday = pd.Timestamp("2023-06-05")
+    base = s8_targets(monday - pd.Timedelta(days=1), monday, f, cfg)
+    for k in range(7):
+        day = monday + pd.Timedelta(days=k)
+        assert s8_latest_targets(day - pd.Timedelta(days=1), day, f, cfg) == base

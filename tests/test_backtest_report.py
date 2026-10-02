@@ -67,7 +67,7 @@ def test_evaluate_writes_verdicts(cfg, market):
     base = run_backtest(market, cfg, start="2021-01-01")
     stress = run_backtest(market, cfg, start="2021-01-01", cost=0.006)
     text, verdicts = evaluate(base, stress, cfg)
-    assert set(verdicts) == {"S10"}
+    assert set(verdicts) == {"S10", "M1", "M2"}
     assert "Beoordeling" in text
     rets = base["equity"][["S1", "S4", "S10"]].pct_change()
     d = deflated_sharpe(rets, "S4", 10)

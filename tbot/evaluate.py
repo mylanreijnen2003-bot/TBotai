@@ -22,6 +22,8 @@ CRITERIA = {
     "S8": 0.35,
     "S9": 0.35,
     "S10": "B1",  # max drawdown ≤ 2/3 van die van B1
+    "M1": 0.40,
+    "M2": 0.30,
 }
 
 
@@ -62,12 +64,12 @@ def deflated_sharpe(returns: pd.DataFrame, target: str, n_trials: int) -> float:
 
 def evaluate(base: dict, stress: dict, cfg: dict, s8_variants: dict[int, pd.Series] | None = None) -> tuple[str, dict]:
     eq, eqs = base["equity"], stress["equity"]
-    rets = eq[[c for c in eq.columns if c.startswith("S")]].pct_change()
+    rets = eq[[c for c in eq.columns if c[0] in "SM"]].pct_change()
     hold = eq[eq.index >= HOLDOUT]
     b1_dd = _dd(eq["B1"])
     b1_hold = _cagr(hold["B1"])
     lines = [
-        "# Beoordeling H7–H10 (vooraf vastgelegd op 1 okt 2026)",
+        "# Beoordeling H7–H12 (S7–S10 vastgelegd op 1 okt, M1/M2 op 2 okt 2026)",
         "",
         f"Backtest {eq.index[0].date()} t/m {eq.index[-1].date()}. Holdout vanaf {HOLDOUT.date()} "
         f"(let op: deze periode was al gezien bij S1–S6, dus geen schone test).",

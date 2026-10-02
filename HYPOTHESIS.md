@@ -118,6 +118,15 @@ op de BTC-reeks (100/200/350-daags gemiddelde) en telt daarom als zwakker bewijs
 - Uitkomst wordt automatisch geschreven naar `results/hypotheses.md`.
 - Wat zakt, gaat eruit. Wat slaagt, draait minimaal 12 maanden live op nepgeld voordat er iets met echt geld gebeurt.
 
+## Aanvulling 2 oktober 2026 — mixen M1 en M2
+Gekozen ná het zien van de backtest van S1–S10 (zie `learnings.md`); daarom zwakker bewijs. Live vanaf de eerstvolgende run.
+- **Werking:** één portefeuille; doelgewicht per munt = gewogen gemiddelde van de doelgewichten van de deelstrategieën.
+  Het S8-deel gebruikt steeds het doel van de laatste maandag. Band 20%; munten zonder doel worden verkocht.
+- **M1 (rendement):** ⅓ S4 + ⅓ S8 + ⅓ S10.
+- **M2 (kleine dalingen):** ½ S1 + ½ S8.
+- **Doelen (H11, H12):** CAGR ≥ 20% bij 0,30%; max drawdown ≤ 40% (M1) en ≤ 30% (M2); CAGR ≥ 15% bij 0,60%;
+  holdout ≥ 0% en ≥ B1; deflated Sharpe ≥ 0,90 met N = 12. Daarna minimaal 12 maanden live op nepgeld.
+
 ## Afgevallen op 1 oktober 2026 (backtest, vóór live-start)
 Volgens de vooraf vastgelegde hypotheses verwijderd. Ze tellen mee als geteste varianten.
 - **S5 (BTC-trend):** H5 niet gehaald — CAGR 27,2% tegen 39,9% voor B1, max drawdown −47% (grens: 60% van B1 = −44%).

@@ -1,6 +1,6 @@
 # TBotai — paper-tradingbot
 
-Test vooraf vastgelegde crypto-strategieën (nu S1–S4 en S10) met **nepgeld** en echte Bitvavo-koersen, tegen BTC vasthouden en een gelijk verdeeld mandje. Geen API-sleutels, geen echt geld.
+Test vooraf vastgelegde crypto-strategieën (nu S1–S4, S10 en de mixen M1, M2) met **nepgeld** en echte Bitvavo-koersen, tegen BTC vasthouden en een gelijk verdeeld mandje. Geen API-sleutels, geen echt geld.
 
 - Regels en hypotheses: [`HYPOTHESIS.md`](HYPOTHESIS.md)
 - Stand van de live-test: [`state/summary.md`](state/summary.md)
@@ -33,7 +33,7 @@ python run.py verify         # live-dagen opnieuw uitrekenen en vergelijken
 | Bestand | Wat |
 |---|---|
 | `config.yaml` | alle getallen (niet wijzigen tijdens de test) |
-| `tbot/strategies.py` | S1–S4, S10, B1, B2 (S7–S9 afgevallen, regels bewaard) |
+| `tbot/strategies.py` | S1–S4, S10, mixen M1/M2, B1, B2 (S7–S9 afgevallen, regels bewaard) |
 | `tbot/portfolio.py` | nepgeld-portefeuille, kosten, band |
 | `tbot/live.py` | de dagelijkse run |
 | `tbot/backtest.py` | backtest met dezelfde code |

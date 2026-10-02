@@ -14,7 +14,7 @@ from .features import Features
 
 # Actieve portefeuilles. S7–S9 zijn op 1 okt 2026 afgevallen (H7–H9); hun regels blijven hieronder staan
 # zodat de uitkomst herhaalbaar is, maar ze draaien niet meer mee.
-STRATEGIES = ["S1", "S2", "S3", "S4", "S10", "B1", "B2"]
+STRATEGIES = ["S1", "S2", "S3", "S4", "S10", "M1", "M2", "B1", "B2"]
 
 
 def _vol_scale(feats: Features, sym: str, t, cfg) -> float:
@@ -150,7 +150,31 @@ def b2_targets(first_day: bool, universe_day: bool, universe) -> dict[str, float
     return {s: 1.0 / len(universe) for s in universe}
 
 
+def s8_latest_targets(t, fill_date, feats: Features, cfg) -> dict[str, float]:
+    """Doelgewichten van S8 zoals vastgesteld op de laatste uitvoeringsdag (maandag) op of vóór fill_date."""
+    k = cfg["s8"]
+    fill = pd.Timestamp(fill_date)
+    back = (fill.weekday() - k["weekday"]) % 7
+    last_fill = fill - pd.Timedelta(days=back)
+    return s8_targets(last_fill - pd.Timedelta(days=1), last_fill, feats, cfg)
+
+
+def mix_targets(name: str, t, fill_date, universe, feats: Features, cfg) -> dict[str, float]:
+    """M1/M2 — gewogen gemiddelde van de doelgewichten van de deelstrategieën (config: mixes)."""
+    out: dict[str, float] = {}
+    for comp, w in cfg["mixes"][name].items():
+        if comp == "S8":
+            tg = s8_latest_targets(t, fill_date, feats, cfg)
+        else:
+            tg = targets_for(comp, t, fill_date, universe, feats, cfg, False, False)
+        for sym, x in (tg or {}).items():
+            out[sym] = out.get(sym, 0.0) + w * x
+    return out
+
+
 def targets_for(name: str, t, fill_date, universe, feats: Features, cfg, first_day: bool, universe_day: bool):
+    if name in cfg.get("mixes", {}):
+        return mix_targets(name, t, fill_date, universe, feats, cfg)
     if name == "S1":
         return s1_targets(t, universe, feats, cfg)
     if name == "S2":
@@ -178,6 +202,6 @@ def targets_for(name: str, t, fill_date, universe, feats: Features, cfg, first_d
 
 # Welke portefeuilles de band-regel gebruiken en munten buiten het universum verkopen
 USES_BAND = {"S1": True, "S2": True, "S3": True, "S4": True, "S7": True, "S8": False, "S9": True, "S10": True,
-             "B1": False, "B2": False}
+             "M1": True, "M2": True, "B1": False, "B2": False}
 FOLLOWS_UNIVERSE = {"S1": True, "S2": True, "S3": True, "S4": True, "S7": True, "S8": False, "S9": True,
-                    "S10": False, "B1": False, "B2": True}
+                    "S10": False, "M1": False, "M2": False, "B1": False, "B2": True}
