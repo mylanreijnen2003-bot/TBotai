@@ -9,6 +9,9 @@ Test vooraf vastgelegde crypto-strategieën (nu S1–S4, S10 en de mixen M1, M2)
 ## Goud-bot (MGC)
 Aparte forward test op gratis Yahoo-koersen in [`futures/`](futures/bot_mgc/README.md): zes goudstrategieën, elke werkdag via de workflow `mgc-paper`. Stand: [`futures/mgc_paper/DAGRAPPORT.md`](futures/mgc_paper/DAGRAPPORT.md).
 
+## Obligatie-bot (ZN)
+Fronttest van acht strategieën op de 10-jaars Treasury-future, ook op gratis Yahoo-koersen ([`futures/bot_zn`](futures/bot_zn/README.md)), elke werkdag via de workflow `zn-paper`. Stand: [`futures/zn_paper/DAGRAPPORT.md`](futures/zn_paper/DAGRAPPORT.md).
+
 ## Hoe het draait
 - **Elke dag 00:17 UTC** start GitHub Actions (`paper-run`) de bot: signaal op het slot van gisteren, uitvoering tegen de open van vandaag, alles opgeslagen in `state/`.
 - **Backtest:** handmatig via Actions → `backtest` → Run workflow.

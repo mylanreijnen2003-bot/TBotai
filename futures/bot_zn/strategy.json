@@ -1,0 +1,105 @@
+{
+  "_uitleg": "Alle getallen van de ZN-bot. Tijden in New York-tijd (ET). Wijzig dit alleen na een bewust besluit; de backtest-criteria mogen niet worden aangepast om alsnog te slagen.",
+
+  "instrument": {
+    "symbool": "ZN",
+    "punt_waarde": 1000.0,
+    "tick_grootte": 0.015625,
+    "tick_waarde": 15.625,
+    "contractmaanden": "HMUZ"
+  },
+
+  "tijden_et": {
+    "signaal_bar": "14:29",
+    "instap_start": "14:30:00",
+    "instap_eind": "14:34:59",
+    "market_instap_D": "14:30:05",
+    "laatste_stop_bar": "14:58",
+    "uitstap": "14:59:00",
+    "controle_flat": "15:05:00",
+    "firma_flat": "16:10:00",
+    "voorbereiden": "14:20:00"
+  },
+
+  "filter_dagen": 60,
+  "stop_factor": 1.5,
+  "stop_gem_dagen": 20,
+  "min_stop_ticks": 4,
+  "geldige_dag_zonder_no_trade_dagen": true,
+
+  "risico_per_trade": 200,
+  "max_contracten": 3,
+  "halveren_binnen_usd_van_bodem": 600,
+  "weekstop_usd": 800,
+  "max_trades_per_dag": 1,
+  "noodrem_dag_usd": 400,
+  "noodrem_bodem_buffer_usd": 300,
+
+  "kosten_per_contract_rt": 3.62,
+  "kosten_opmerking": "Ruime aanname. TopstepX rekent voor ZN $2,62 per round-turn (gecontroleerd 3 okt 2026, help.topstep.com).",
+
+  "fill": {
+    "limiet_doorbraak_ticks": 1,
+    "slippage_ticks": 1,
+    "market_instap_slippage_ticks": 1
+  },
+  "stress": {
+    "limiet_doorbraak_ticks": 2,
+    "slippage_ticks": 2,
+    "market_instap_slippage_ticks": 2
+  },
+
+  "kerstperiode": {"van": "12-24", "tot": "01-02"},
+
+  "roll": {
+    "handelsdagen_voor_laatste_handelsdag": 5,
+    "max_afwijking_dagen_v0": 3
+  },
+
+  "backtest": {
+    "data_start": "2010-06-06",
+    "in_sample": ["2010-01-01", "2019-12-31"],
+    "out_of_sample_start": "2020-01-01",
+    "apart_vanaf": "2022-01-01",
+    "venster_et": ["08:00", "15:15"],
+    "herstart_bij_vastlopen": true,
+    "herstart_uitleg": "Zakt het virtuele 50K-account binnen $600 van de bodem en geeft halveren 0 contracten, dan kan de bot nooit meer traden (het saldo verandert niet meer). De backtest begint dan een nieuw account (zoals een reset) en telt dat."
+  },
+
+  "criteria": {
+    "min_trades": 250,
+    "min_expectancy_R": 0.05,
+    "min_t_stat": 2.0,
+    "min_profit_factor_stress": 1.15,
+    "max_jaren_negatief": 2,
+    "max_aandeel_een_jaar": 0.50,
+    "max_drawdown_usd": 2000,
+    "min_vulgraad": 0.40,
+    "min_aandeel_gevoeligheid_positief": 0.67
+  },
+
+  "gevoeligheid": {
+    "filter_dagen": [0, 40, 60, 120],
+    "stop_factor": [1.0, 1.5, 2.0]
+  },
+
+  "live": {
+    "max_verzoeken_per_seconde": 1,
+    "poll_seconden": 3,
+    "bewaking_elke_n": 20,
+    "bewaking_min_trades": 60,
+    "bewaking_t_stat_grens": -1.0,
+    "slippage_waarschuwing_ticks": 1,
+    "fase_b_min_signalen": 40,
+    "fase_c_min_trades": 60,
+    "historie_kalenderdagen": 140
+  },
+
+  "databento": {
+    "dataset": "GLBX.MDP3",
+    "schema": "ohlcv-1m",
+    "symbool": "ZN.v.0",
+    "stype_in": "continuous",
+    "gratis_tegoed_usd": 125
+  }
+}

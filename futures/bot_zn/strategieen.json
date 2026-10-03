@@ -1,0 +1,83 @@
+{
+  "_uitleg": "De strategieën die naast elkaar worden getest (backtest) en elke dag in paper worden afgespeeld. 'standaard' = de instelling die in paper draait. 'grid' = de varianten voor de gevoeligheidstabel en de statistiek-correcties. Pas niets aan om een strategie alsnog te laten slagen.",
+
+  "risico_per_trade": 200,
+  "max_contracten": 3,
+  "min_stop_ticks": 4,
+  "kosten_per_contract_rt": 3.62,
+  "slippage_ticks": 1,
+  "stress_slippage_ticks": 2,
+  "limiet_doorbraak_ticks": 1,
+  "stress_limiet_doorbraak_ticks": 2,
+  "basis_blokkades": ["weekend", "feestdag", "vervroegde_sluiting", "kerstperiode", "geen_trade_periode", "roll_dag"],
+
+  "strategieen": {
+    "A": {
+      "naam": "A – laatste half uur, ROD-filter (basis)",
+      "soort": "laatste_halfuur",
+      "extra_blokkades": ["fomc", "fomc_notulen"],
+      "standaard": {"signaal_tijd": "14:30", "venster_min": 5, "drempel_pct": 50, "stop_factor": 1.5, "teken_filter": null},
+      "grid": {"drempel_pct": [50, 60, 70], "stop_factor": [1.0, 1.5, 2.0]}
+    },
+    "B1": {
+      "naam": "B1 – als A, maar ochtend en dag in dezelfde richting",
+      "soort": "laatste_halfuur",
+      "extra_blokkades": ["fomc", "fomc_notulen"],
+      "standaard": {"signaal_tijd": "14:30", "venster_min": 5, "drempel_pct": 50, "stop_factor": 1.5, "teken_filter": "08:50"},
+      "grid": {"teken_filter": ["08:50", "09:30"]}
+    },
+    "B2": {
+      "naam": "B2 – alleen de laatste 10 minuten",
+      "soort": "laatste_halfuur",
+      "extra_blokkades": ["fomc", "fomc_notulen"],
+      "standaard": {"signaal_tijd": "14:50", "venster_min": 3, "drempel_pct": 50, "stop_factor": 1.5, "teken_filter": null},
+      "grid": {"signaal_tijd": ["14:45", "14:50", "14:55"]}
+    },
+    "C": {
+      "naam": "C – maandeinde long",
+      "soort": "maandeinde",
+      "extra_blokkades": [],
+      "standaard": {"laatste_dagen": 3, "instap": "08:20", "uit": "14:59", "stop_ticks": 10},
+      "grid": {"laatste_dagen": [1, 2, 3], "instap": ["08:20", "09:30", "11:00"]}
+    },
+    "D": {
+      "naam": "D – veilingdag: long na de uitslag van 13:00",
+      "soort": "veiling",
+      "extra_blokkades": ["fomc", "fomc_notulen"],
+      "standaard": {"veilingen": "5+10+30", "voorwaarde": "geen", "stop_ticks": 6, "uit": "14:25"},
+      "grid": {"veilingen": ["alle", "5+10+30", "10"], "voorwaarde": ["geen", "eerst_omlaag"], "stop_ticks": [4, 6, 8]}
+    },
+    "E": {
+      "naam": "E – drift vóór de cijfers van 10:00 (ISM, Conference Board)",
+      "soort": "drift_10u",
+      "extra_blokkades": [],
+      "standaard": {"k": 1.0, "uit": "10:02", "stop_ticks": 8},
+      "grid": {"k": [0.5, 1.0, 1.5], "uit": ["10:01", "10:02", "10:05"]}
+    },
+    "G": {
+      "naam": "G – opening range breakout (controlegroep)",
+      "soort": "orb",
+      "extra_blokkades": [],
+      "standaard": {"range_min": 30, "breakout_tot": "10:59", "max_stop_ticks": 10, "uit": "12:00"},
+      "grid": {"range_min": [15, 30, 60]}
+    },
+    "H": {
+      "naam": "H – ochtend-reversal van het laatste half uur van gisteren",
+      "soort": "ochtend_reversal",
+      "extra_blokkades": [],
+      "standaard": {"drempel_pct": 50, "uit": "10:00", "stop_ticks": 6},
+      "grid": {"drempel_pct": [50, 70], "uit": ["09:00", "09:30", "10:00"]}
+    }
+  },
+
+  "prioriteit_portefeuille": ["E", "D", "A", "B1", "B2", "C", "H", "G"],
+  "portefeuille": {"max_trades_per_dag": 2, "dagstop_usd": 400},
+
+  "oordeel": {
+    "min_trades_oos": 100,
+    "min_t_stat": 2.0,
+    "max_holm_p": 0.05,
+    "bootstrap_runs": 2000,
+    "blok_lengte_dagen": 10
+  }
+}

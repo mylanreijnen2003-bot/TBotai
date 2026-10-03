@@ -6,6 +6,7 @@ on:
       - "state/**"
       - "results/**"
       - "futures/mgc_paper/**"
+      - "futures/zn_paper/**"
       - "**.md"
   workflow_dispatch:
 
