@@ -1,0 +1,148 @@
+{
+  "_uitleg": "Alle getallen van de MGC-bot (Micro Gold). Tijden in New York-tijd (ET). Wijzig dit alleen na een bewust besluit; de backtest-criteria mogen niet worden aangepast om alsnog te slagen.",
+
+  "instrument": {
+    "symbool": "MGC",
+    "punt_waarde": 10.0,
+    "tick_grootte": 0.1,
+    "tick_waarde": 1.0,
+    "contractmaanden": "GJMQZ"
+  },
+
+  "tijden_et": {
+    "ochtend_bar": "08:49",
+    "ochtend_vanaf": "08:20",
+    "ochtend_eind": "08:51",
+    "signaal_bar": "12:59",
+    "signaal_vanaf": "12:30",
+    "slot_bar": "13:29",
+    "slot_vanaf": "13:00",
+    "instap_start": "13:00:00",
+    "instap_order": "13:00:05",
+    "instap_eind": "13:02:00",
+    "eerste_bar": "13:00",
+    "laatste_instap_bar": "13:01",
+    "laatste_stop_bar": "13:28",
+    "uitstap": "13:29:00",
+    "controle_flat": "13:35:00",
+    "firma_flat": "16:10:00",
+    "voorbereiden": "12:40:00",
+    "drukke_periode": ["12:58:00", "13:36:00"]
+  },
+
+  "varianten": {
+    "_uitleg": "Vooraf vastgelegde strategieën (zie HYPOTHESIS.md). Alle varianten handelen hetzelfde venster 13:00-13:29 ET met dezelfde stop, positiegrootte en kosten; alleen het signaal verschilt. Alleen A mag in fase C/D orders versturen; de rest draait in backtest en paper.",
+    "A": {"naam": "A – laatste-halfuur momentum (ROD, filter)", "signaal": "rod", "filter": true},
+    "B": {"naam": "B – altijd long (benchmark)", "signaal": "long", "filter": false},
+    "C": {"naam": "C – ROD zonder filter (replicatie paper)", "signaal": "rod", "filter": false},
+    "D": {"naam": "D – ochtendsignaal (overnacht + eerste halfuur, filter)", "signaal": "onfh", "filter": true},
+    "E": {"naam": "E – eensgezind (ROD en ochtend zelfde richting)", "signaal": "beide", "filter": false},
+    "R": {"naam": "R – willekeurige richting (controle)", "signaal": "willekeurig", "filter": true}
+  },
+  "paper_varianten": ["A", "B", "C", "D", "E", "R"],
+  "richtinggevende_varianten": ["A", "C", "D", "E"],
+  "benchmark_varianten": ["B", "R"],
+  "willekeurig_seed": 20261003,
+  "min_t_stat_gecorrigeerd": 2.50,
+  "min_t_stat_uitleg": "4 richtinggevende varianten getest (A, C, D, E): Bonferroni 5% tweezijdig / 4 -> t >= 2,50 voor de beste variant.",
+
+  "filter_dagen": 60,
+  "stop_factor": 1.5,
+  "stop_gem_dagen": 20,
+  "min_stop_punten": 2.0,
+  "geldige_dag_zonder_no_trade_dagen": true,
+
+  "risico_per_trade": 200,
+  "max_contracten": 10,
+  "halveren_binnen_usd_van_bodem": 600,
+  "weekstop_usd": 800,
+  "max_trades_per_dag": 1,
+  "noodrem_dag_usd": 400,
+  "noodrem_bodem_buffer_usd": 300,
+
+  "kosten_per_contract_rt": 2.42,
+  "kosten_opmerking": "Ruime aanname. TopstepX rekent voor MGC $1,92 per round-turn (gecontroleerd 3 okt 2026, help.topstep.com).",
+
+  "fill": {
+    "slippage_ticks": 1,
+    "market_instap_slippage_ticks": 1
+  },
+  "stress": {
+    "slippage_ticks": 2,
+    "market_instap_slippage_ticks": 2
+  },
+
+  "kerstperiode": {"van": "12-24", "tot": "01-02"},
+  "fomc_wel_traden": true,
+
+  "roll": {
+    "handelsdagen_voor_laatste_handelsdag": 5,
+    "max_afwijking_dagen_v0": 3
+  },
+
+  "backtest": {
+    "data_start": "2010-06-06",
+    "in_sample": ["2010-01-01", "2019-12-31"],
+    "out_of_sample_start": "2020-01-01",
+    "vensters_et": [["08:15", "08:55"], ["12:30", "13:40"]],
+    "herstart_bij_vastlopen": true,
+    "herstart_uitleg": "Zakt het virtuele 50K-account binnen $600 van de bodem en geeft halveren 0 contracten, dan kan de bot nooit meer traden. De backtest begint dan een nieuw account (zoals een reset) en telt dat.",
+    "monte_carlo_runs": 10000
+  },
+
+  "criteria": {
+    "min_trades": 300,
+    "min_expectancy_R": 0.05,
+    "min_t_stat": 2.0,
+    "min_profit_factor_stress": 1.15,
+    "max_jaren_negatief": 2,
+    "max_aandeel_een_jaar": 0.50,
+    "max_drawdown_usd": 2000,
+    "min_monte_carlo_pct": 60,
+    "min_aandeel_gevoeligheid_positief": 0.67
+  },
+
+  "forward": {
+    "_uitleg": "GitHub-versie: elke werkdag na het slot (GitHub Actions) alle dagen afspelen met gratis Yahoo-data (1-minuut; opwarmen met 5-minuut). Geen account of sleutel nodig.",
+    "startdatum": "2026-10-05",
+    "max_dagen_terug_1m": 28,
+    "max_dagen_terug_5m": 58,
+    "wachtdagen_bij_geen_data": 3
+  },
+
+  "forward_test": {
+    "_uitleg": "Besluit 3 okt 2026: geen backtest, de paper-test (forward test) is de toets. Oordeel per strategie (A, C, D, E) zodra die genoeg paper-trades heeft. Vooraf vastgelegd; niet aanpassen om alsnog te slagen.",
+    "min_trades": 300,
+    "min_expectancy_R": 0.05,
+    "min_t_stat": 2.50,
+    "min_profit_factor": 1.15,
+    "max_drawdown_usd": 2000,
+    "controle_r_min_trades": 100
+  },
+
+  "gevoeligheid": {
+    "filter_dagen": [0, 40, 60, 120],
+    "stop_factor": [1.0, 1.5, 2.0]
+  },
+
+  "live": {
+    "verzoeken_per_seconde_normaal": 1,
+    "verzoeken_per_seconde_druk": 2,
+    "poll_seconden": 1,
+    "bewaking_elke_n": 20,
+    "slippage_waarschuwing_ticks": 1,
+    "fase_b_min_weken": 8,
+    "fase_b_min_signalen": 40,
+    "fase_c_min_trades": 60,
+    "historie_kalenderdagen": 140,
+    "dagrapport_openen": true
+  },
+
+  "databento": {
+    "dataset": "GLBX.MDP3",
+    "schema": "ohlcv-1m",
+    "symbool": "GC.v.0",
+    "stype_in": "continuous",
+    "gratis_tegoed_usd": 125
+  }
+}

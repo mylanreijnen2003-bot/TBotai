@@ -1,0 +1,9 @@
+{
+  "_uitleg": "Mijn persoonlijke dagregels. Gebruikt door de Monte Carlo en de waarschuwingen in het invoerscherm.",
+  "dagstop_verliezen": 2,
+  "dagstop_usd": 400,
+  "winstplafond_usd": 700,
+  "max_trades_per_avond": 2,
+  "weekstop_usd": 800,
+  "halveren_binnen_usd_van_bodem": 600
+}

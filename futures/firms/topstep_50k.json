@@ -1,0 +1,14 @@
+{
+  "name": "Topstep 50K Trading Combine (Standard)",
+  "verify_note": "Getallen komen uit het plan, niet van de site van de firma. Controleer ze op de dag dat je koopt (consistency werd door bronnen als 50% en 55% opgegeven).",
+  "start_balance": 50000,
+  "profit_target": 3000,
+  "max_loss": 2000,
+  "trail_type": "eod",
+  "lock_level": 50000,
+  "intraday_breach_uses_mae": true,
+  "daily_loss_limit": 1000,
+  "dll_mode": "pause",
+  "consistency": 0.50,
+  "min_trading_days": 0
+}

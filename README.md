@@ -6,6 +6,9 @@ Test vooraf vastgelegde crypto-strategieën (nu S1–S4, S10 en de mixen M1, M2)
 - Stand van de live-test: [`state/summary.md`](state/summary.md)
 - Backtest-resultaten: [`results/`](results/) — oordeel per strategie in [`results/hypotheses.md`](results/hypotheses.md)
 
+## Goud-bot (MGC)
+Aparte forward test op gratis Yahoo-koersen in [`futures/`](futures/bot_mgc/README.md): zes goudstrategieën, elke werkdag via de workflow `mgc-paper`. Stand: [`futures/mgc_paper/DAGRAPPORT.md`](futures/mgc_paper/DAGRAPPORT.md).
+
 ## Hoe het draait
 - **Elke dag 00:17 UTC** start GitHub Actions (`paper-run`) de bot: signaal op het slot van gisteren, uitvoering tegen de open van vandaag, alles opgeslagen in `state/`.
 - **Backtest:** handmatig via Actions → `backtest` → Run workflow.

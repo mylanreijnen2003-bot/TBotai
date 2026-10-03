@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - "state/**"
       - "results/**"
+      - "futures/mgc_paper/**"
       - "**.md"
   workflow_dispatch:
 
