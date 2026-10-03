@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       datatest:
-        description: "Alleen controleren of Yahoo data geeft (slaat niets op)"
+        description: "Alleen controleren of Yahoo data geeft (resultaat in datatest.txt)"
         type: boolean
         default: false
 
@@ -48,7 +48,7 @@ jobs:
         run: python -m bot_mgc.forward
 
       - name: Resultaten opslaan
-        if: ${{ always() && !inputs.datatest }}
+        if: ${{ always() }}
         run: |
           git config user.name "tbotai-bot"
           git config user.email "tbotai-bot@users.noreply.github.com"

@@ -151,13 +151,13 @@ def run(broker, map_=STATE, nu=None, veilingen_bron=veilingen_online, log=print)
     return {"ft": ft, "dagen": dagen, "rapport": pad, "laatste": laatste, "sig": sig}
 
 
-def datatest(broker):
+def datatest(broker, map_=STATE):
     from .kalender_zn import Kalender
     from .instellingen import load_calendar, load_strategy
     kal = Kalender(load_calendar(), load_strategy())
     vandaag = dt.datetime.now(ET).date()
     cid = broker.contract_id(*kal.contract_voor(vandaag))
-    ok = True
+    ok, regels = True, ["Datatest %s UTC" % dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M")]
     for terug, naam in ((6, "1m"), (40, "5m")):
         van = vandaag - dt.timedelta(days=terug)
         tot = van + dt.timedelta(days=4)
@@ -166,9 +166,17 @@ def datatest(broker):
         per = {}
         for b in bars:
             per.setdefault(b["t"].astimezone(ET).date(), []).append(b)
-        print("%s %s (%s t/m %s): %d dagen, %d bars" % (broker.terugval.get(cid, cid), naam, van, tot, len(per), len(bars)))
+        regels.append("%s %s (%s t/m %s): %d dagen, %d bars" % (broker.terugval.get(cid, cid), naam, van, tot, len(per), len(bars)))
+        for d in sorted(per):
+            b = {x["t"].astimezone(ET).strftime("%H:%M"): x for x in per[d]}
+            regels.append("  %s: %d bars, eerste %s, laatste %s, 14:25-bar slot %s" % (
+                d, len(per[d]), min(b), max(b), b["14:25"]["c"] if "14:25" in b else "–"))
         ok = ok and bool(bars)
-    print("Veilingen (fiscaldata):", veilingen_online(vandaag - dt.timedelta(days=30), vandaag))
+    regels.append("Veilingen (fiscaldata): %s" % veilingen_online(vandaag - dt.timedelta(days=30), vandaag))
+    tekst = "\n".join(regels)
+    print(tekst)
+    Path(map_).mkdir(parents=True, exist_ok=True)
+    (Path(map_) / "datatest.txt").write_text(tekst + "\n", encoding="utf-8")
     return 0 if ok else 1
 
 
@@ -183,7 +191,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     broker = YahooBroker()
     if a.datatest:
-        return datatest(broker)
+        return datatest(broker, a.map)
     try:
         res = run(broker, a.map)
     except VerbindingsFout as e:

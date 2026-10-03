@@ -302,21 +302,25 @@ def _telegram(tekst):
         return False
 
 
-def datatest(bron):
+def datatest(bron, map_=STATE):
     """Laat per dag zien welke prijzen de bot uit Yahoo haalt (1m en 5m), zonder iets op te slaan."""
     strat = load_strategy()
     kal = Kalender(load_calendar(), strat)
     vandaag = dt.datetime.now(dt.timezone.utc).astimezone(ET).date()
     jm = kal.contract_voor(vandaag)
-    ok = True
+    ok, regels = True, ["Datatest %s UTC" % dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M")]
     for interval, terug in (("1m", 7), ("5m", 20)):
         label, data = haal(bron, jm, vandaag - dt.timedelta(days=terug), vandaag, interval, strat)
-        print("%s %s: %d dagen" % (label, interval, len(data)))
+        regels.append("%s %s: %d dagen" % (label, interval, len(data)))
         for d in sorted(data):
             b = data[d]
-            print("  %s  %3d bars  08:50 %s  13:00 %s  13:30 %s" % (d, len(b), ochtendprijs(b, strat), signaalprijs(b, strat),
-                                                                 slotprijs(b, strat)))
+            regels.append("  %s  %3d bars  08:50 %s  13:00 %s  13:30 %s" % (d, len(b), ochtendprijs(b, strat),
+                                                                        signaalprijs(b, strat), slotprijs(b, strat)))
         ok = ok and bool(data)
+    tekst = "\n".join(regels)
+    print(tekst)
+    Path(map_).mkdir(parents=True, exist_ok=True)
+    (Path(map_) / "datatest.txt").write_text(tekst + "\n", encoding="utf-8")
     return 0 if ok else 1
 
 
@@ -325,11 +329,11 @@ def main(argv=None):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
     ap.add_argument("--map", default=str(STATE))
-    ap.add_argument("--datatest", action="store_true", help="alleen controleren of Yahoo data geeft; schrijft niets")
+    ap.add_argument("--datatest", action="store_true", help="alleen controleren of Yahoo data geeft (resultaat in datatest.txt)")
     a = ap.parse_args(argv)
     from .yahoo import YahooBron
     if a.datatest:
-        return datatest(YahooBron())
+        return datatest(YahooBron(), a.map)
     res = run(YahooBron(), a.map)
     if res.get("gestopt"):
         return 0
