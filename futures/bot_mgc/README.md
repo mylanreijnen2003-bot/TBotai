@@ -30,7 +30,7 @@ Elke strategie heeft een eigen virtueel Topstep 50K-account. Een oordeel (GO/NO-
 - **Noodstop:** maak een bestand `KILL` in de hoofdmap van de repo (stopt ook de cryptobot) of `futures/mgc_paper/STOP` (alleen deze bot).
 
 ## Opwarmen
-De filters kijken 60 handelsdagen terug. Bij de start haalt de bot 5-minuutkoersen op (Yahoo bewaart die 60 kalenderdagen, ± 40 handelsdagen). A, D en R handelen daarom pas na ± 4 weken; daarna draait alles.
+De bot heeft 60 handelsdagen historie nodig (filter en stop). Bij de start haalde hij 5-minuutkoersen op: Yahoo bewaart die 60 kalenderdagen, ± 40 handelsdagen. De eerste ± 4 weken (tot begin november 2026) handelt daarom nog geen enkele strategie; het dagrapport toont dan "nog te weinig historie".
 
 ## Beperkingen
 - Yahoo-data is gratis en niet officieel: soms ontbreekt een minuut of een dag. Ontbreekt de dag na 3 dagen nog, dan telt hij als `geen_data`.
