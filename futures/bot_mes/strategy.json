@@ -1,0 +1,55 @@
+{
+  "_uitleg": "Alle getallen van de MES-bot (forward test op GitHub). Tijden in New York-tijd (ET). Vastgelegd 3 okt 2026 vóór de start; niet aanpassen om alsnog te slagen (zie HYPOTHESIS.md).",
+
+  "instrument": {"symbool": "MES", "yahoo_root": "ES", "punt_waarde": 5.0, "tick": 0.25, "contractmaanden": [3, 6, 9, 12],
+                 "_uitleg": "Koersen van ES (grote S&P-future, zelfde prijs), gerekend met MES: 1 punt = $5, 1 tick = 0,25 punt = $1,25."},
+  "roll_kalenderdagen_voor_expiratie": 8,
+
+  "risico_per_trade": 200,
+  "max_contracten": 5,
+  "halveren_binnen_usd_van_bodem": 600,
+  "weekstop_usd": 800,
+  "kosten_per_contract_rt": 1.22,
+  "slippage_ticks": 1,
+  "doel_doorbraak_ticks": 1,
+  "min_stop_punten": 2.0,
+
+  "varianten": {
+    "A": {"naam": "A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R)", "soort": "trendvervolg"},
+    "B": {"naam": "B – eerste half uur → laatste half uur (benchmark uit plan)", "soort": "benchmark_b"},
+    "C": {"naam": "C – ROD-momentum laatste half uur, zonder filter", "soort": "laatste_halfuur", "signaal": "rod", "filter": false},
+    "D": {"naam": "D – ROD-momentum laatste half uur, filter", "soort": "laatste_halfuur", "signaal": "rod", "filter": true},
+    "E": {"naam": "E – eerste half uur incl. nacht → laatste half uur (Gao e.a.)", "soort": "laatste_halfuur", "signaal": "r1000", "filter": false},
+    "G": {"naam": "G – opening range breakout 5 min, 10R (Zarattini e.a.)", "soort": "orb"},
+    "R": {"naam": "R – willekeurige richting op de dagen van D (controle)", "soort": "laatste_halfuur", "signaal": "willekeurig", "filter": true}
+  },
+  "richtinggevende_varianten": ["A", "C", "D", "E", "G"],
+  "willekeurig_seed": 20261003,
+
+  "A": {
+    "or_van": "09:30", "or_tot": "09:59",
+    "bias_bar": "14:40",
+    "pullback_tolerantie_punten": 2.0,
+    "instap_van": "14:50", "instap_tot": "15:45",
+    "max_stop_punten": 12.0,
+    "doel_R": 2.0,
+    "uitstap": "15:55",
+    "max_trades_per_dag": 2,
+    "dagstop_verliezen": 2,
+    "dagstop_usd": 400,
+    "winstplafond_usd": 700
+  },
+  "B": {"instap": "15:30", "stop_punten": 8.0, "uitstap": "15:55"},
+  "laatste_halfuur": {"instap": "15:30", "uitstap": "15:59", "stop_factor": 1.5, "stop_gem_dagen": 20, "filter_dagen": 60},
+  "G": {"instap": "09:35", "doel_R": 10.0, "uitstap": "15:59"},
+
+  "forward": {
+    "startdatum": "2026-10-05",
+    "klaar_na_et": "16:10",
+    "max_dagen_terug_1m": 28,
+    "max_dagen_terug_5m": 58,
+    "historie_kalenderdagen": 120,
+    "wachtdagen_bij_geen_data": 3
+  },
+  "forward_test": {"min_trades": 300, "min_expectancy_R": 0.05, "min_t_stat": 2.5, "min_profit_factor": 1.15, "max_drawdown_usd": 2000}
+}

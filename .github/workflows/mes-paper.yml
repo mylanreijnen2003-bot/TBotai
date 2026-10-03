@@ -1,0 +1,65 @@
+name: mes-paper
+
+# MES-bot (S&P 500): forward test van alle strategieën op gratis Yahoo-koersen. Geen account, geen sleutels, geen orders.
+# Elke werkdag om 21:17 UTC (na het slot van 16:00 New York-tijd, ook in de winter).
+# Gemiste dagen worden bij de volgende run ingehaald (zolang Yahoo de 1-minuutdata nog heeft: 30 dagen).
+on:
+  schedule:
+    - cron: "17 21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      datatest:
+        description: "Alleen controleren of Yahoo data geeft (resultaat in datatest.txt)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: mes-paper
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: futures
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: futures/requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Datatest
+        if: ${{ inputs.datatest }}
+        run: python -m bot_mes.forward --datatest
+
+      - name: Forward test (alle strategieën)
+        if: ${{ !inputs.datatest }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m bot_mes.forward
+
+      - name: Resultaten opslaan
+        if: ${{ always() }}
+        run: |
+          git config user.name "tbotai-bot"
+          git config user.email "tbotai-bot@users.noreply.github.com"
+          git add mes_paper/ || true
+          if git diff --cached --quiet; then
+            echo "Geen wijzigingen"
+            exit 0
+          fi
+          git commit -m "mes forward test $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep 7
+          done
+          exit 1

@@ -12,6 +12,9 @@ Aparte forward test op gratis Yahoo-koersen in [`futures/`](futures/bot_mgc/READ
 ## Obligatie-bot (ZN)
 Fronttest van acht strategieën op de 10-jaars Treasury-future, ook op gratis Yahoo-koersen ([`futures/bot_zn`](futures/bot_zn/README.md)), elke werkdag via de workflow `zn-paper`. Stand: [`futures/zn_paper/DAGRAPPORT.md`](futures/zn_paper/DAGRAPPORT.md).
 
+## S&P 500-bot (MES)
+Forward test van zeven strategieën op de S&P 500-future, ook op gratis Yahoo-koersen ([`futures/bot_mes`](futures/bot_mes/README.md)), elke werkdag via de workflow `mes-paper`. Stand: [`futures/mes_paper/DAGRAPPORT.md`](futures/mes_paper/DAGRAPPORT.md).
+
 ## Hoe het draait
 - **Elke dag 00:17 UTC** start GitHub Actions (`paper-run`) de bot: signaal op het slot van gisteren, uitvoering tegen de open van vandaag, alles opgeslagen in `state/`.
 - **Backtest:** handmatig via Actions → `backtest` → Run workflow.
