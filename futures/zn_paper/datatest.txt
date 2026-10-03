@@ -1,0 +1,12 @@
+Datatest 2026-10-03 11:48 UTC
+ZNZ26.CBT 1m (2026-09-27 t/m 2026-10-01): 4 dagen, 4314 bars
+  2026-09-27: 331 bars, eerste 18:00, laatste 23:58, 14:25-bar slot –
+  2026-09-28: 1340 bars, eerste 00:00, laatste 23:58, 14:25-bar slot 104.515625
+  2026-09-29: 1313 bars, eerste 00:00, laatste 23:58, 14:25-bar slot 104.375
+  2026-09-30: 1330 bars, eerste 00:00, laatste 23:58, 14:25-bar slot 104.203125
+ZNZ26.CBT 5m (2026-08-24 t/m 2026-08-28): 4 dagen, 1084 bars
+  2026-08-24: 265 bars, eerste 00:10, laatste 23:55, 14:25-bar slot 108.203125
+  2026-08-25: 270 bars, eerste 00:00, laatste 23:55, 14:25-bar slot 108.609375
+  2026-08-26: 276 bars, eerste 00:00, laatste 23:55, 14:25-bar slot 108.390625
+  2026-08-27: 273 bars, eerste 00:00, laatste 23:55, 14:25-bar slot 108.3125
+Veilingen (fiscaldata): {datetime.date(2026, 9, 8): '3-Year Note', datetime.date(2026, 9, 9): '10-Year Note', datetime.date(2026, 9, 10): '30-Year Bond', datetime.date(2026, 9, 15): '20-Year Bond', datetime.date(2026, 9, 22): '2-Year Note', datetime.date(2026, 9, 23): '5-Year Note', datetime.date(2026, 9, 24): '7-Year Note'}
