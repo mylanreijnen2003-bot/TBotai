@@ -25,3 +25,18 @@ Keuzes die het plan openliet: de pullback-check gebruikt de VWAP bij het slot va
 ## Lat (per strategie A, C, D, E, G; pas bij 300 trades)
 Expectancy ≥ +0,05R na kosten, t-stat ≥ 2,50 (5 strategieën tegelijk), profit factor ≥ 1,15, max drawdown < $2.000, beter dan B én R.
 Opwarmen: C en E handelen vanaf de eerste dag (20 dagen historie via 5-minuutdata), D en R na ± 4 weken; A, B en G meteen.
+
+## Toevoeging H (vastgelegd 5 okt 2026, vóór de eerste handelsdag; A–G ongewijzigd)
+Bron: Zarattini, Aziz & Barbon (2024), "Beat the Market – An Effective Intraday Momentum Strategy for S&P500 ETF (SPY)".
+Het paper meldt op S&P 500-futures (2007–2024) Sharpe 1,32; een onafhankelijke replicatie vindt sinds 2025 een Sharpe rond 0.
+Deze forward test beslist.
+
+| Code | Regels (New York-tijd) |
+|---|---|
+| H | σ(t) = gemiddelde \|prijs(t) ÷ opening 09:30 − 1\| over de laatste 14 handelsdagen, voor t = 10:00, 10:30, … 15:30. Bovenband = max(opening, slot gisteren) × (1 + σ), onderband = min(opening, slot gisteren) × (1 − σ). Op elk controlepunt: prijs boven de bovenband → long, onder de onderband → short; instap op de opening van het controlepunt. Trailing-uitstap op een controlepunt als de prijs onder max(bovenband, VWAP) zakt (long) of boven min(onderband, VWAP) komt (short). Uit 15:59. |
+
+Aanpassingen aan het paper (voor Topstep en deze bot): vaste $200 risico i.p.v. volatiliteitsdoel en hefboom tot 4×; harde stop op
+σ(t) × opening tegen de positie in (daarop rekent de positiegrootte); max 4 trades per dag; na een trailing-uitstap niet op hetzelfde
+controlepunt in dezelfde richting terug. Gemeenschappelijke regels (kosten, slippage, stop < 2 punten, kalender, weekstop) gelden ook voor H.
+Lat: dezelfde als A, C, D, E en G (≥ 300 trades, ≥ +0,05R, t ≥ 2,50, PF ≥ 1,15, DD < $2.000, beter dan B én R). Opwarmen: 14 dagen
+met halfuurprijzen uit 5-minuutdata, dus H handelt vanaf de eerste dag.

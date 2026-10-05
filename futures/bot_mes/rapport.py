@@ -14,6 +14,7 @@ REDENEN = {
     "stop_te_groot": "stop te groot voor $200 risico", "gehalveerd_naar_0": "virtueel account te dicht bij de bodem",
     "weekstop": "weekstop (−$800 deze week)", "fomc": "FOMC-dag", "feestdag": "beursfeestdag",
     "vervroegde_sluiting": "vervroegde sluiting", "kerstperiode": "kerstperiode", "gemist": "gemist (geen data meer)",
+    "geen_uitbraak": "koers bleef binnen de ruisband", "trailing": "trailing stop (band/VWAP)",
     "tijd": "tijdsuitstap", "stop": "stop geraakt", "doel": "doel geraakt", "tijd_geen_bar": "laatste koers",
 }
 

@@ -4,12 +4,14 @@ Geen vooruitkijken: elke strategie neemt zijn beslissing alleen op bars die al a
 - A: na 14:45 alleen 5-minuutbars die gesloten zijn, instap op de opening van de volgende bar.
 - B, C, D, E, R: signaal op koersen t/m 15:30 (of 10:00) en eerdere dagen; instap op de opening van 15:30.
 - G: alleen de eerste 5 minuten (09:30-09:34); instap op de opening van 09:35.
+- H: op elk controlepunt (10:00, 10:30, ... 15:30) alleen bars die vóór dat tijdstip begonnen; instap en trailing-uitstap
+  op de opening van het controlepunt.
 """
 import random
 import statistics
 from dataclasses import dataclass, field
 
-from .kern import contracten, op_tick, open_vanaf, prijs_om, simuleer_trade, vijf_minuten, vwap_reeks
+from .kern import contracten, op_tick, open_vanaf, plus_min, prijs_om, simuleer_trade, vijf_minuten, vwap_reeks
 
 
 @dataclass
@@ -22,6 +24,7 @@ class Dag:
     p1600: float = None
     vorig_slot: float = None       # prijs 16:00 van de vorige handelsdag, zelfde contract
     redenen: list = field(default_factory=list)
+    ruis: dict = None              # H: {controlepunt: |prijs / opening 09:30 − 1|}, alleen in de historie
 
     @property
     def rod(self):
@@ -43,6 +46,19 @@ class Dag:
 def prijzen(bars):
     """(p1000, p1530, p1600): de drie prijzen die de historie nodig heeft. Werkt ook met 5-minuutbars."""
     return prijs_om(bars, "10:00", "09:30"), prijs_om(bars, "15:30", "15:00"), prijs_om(bars, "16:00", "15:30")
+
+
+def ruis_prijzen(bars, checkpunten):
+    """(opening 09:30, {controlepunt: prijs}) voor H. Werkt ook met 5-minuutbars."""
+    o = bars["09:30"][0] if "09:30" in bars else None
+    return o, {cp: prijs_om(bars, cp, "09:30") for cp in checkpunten}
+
+
+def ruis_uit(o, ps):
+    """{controlepunt: |p/o − 1|}; None als er iets ontbreekt."""
+    if not o or any(v is None for v in ps.values()):
+        return None
+    return {cp: abs(v / o - 1) for cp, v in ps.items()}
 
 
 def maak_dag(datum, contract, bars, vorig_slot, kal):
@@ -226,6 +242,77 @@ def strategie_g(dag, strat, rek):
     return ([t] if t else []), reden
 
 
+# ---------------------------------------------------------------- H: noise area (Zarattini, Aziz & Barbon 2024)
+def strategie_h(dag, hist, strat, rek):
+    """Ruisband per controlepunt = gemiddelde |beweging vanaf de opening| op dat tijdstip over de laatste 14 dagen.
+    Boven max(opening, slot gisteren) × (1 + σ) → long, onder min(...) × (1 − σ) → short. Trailing-uitstap op een
+    controlepunt als de koers aan de verkeerde kant van max(band, VWAP) (long) of min(band, VWAP) (short) staat.
+    Harde stop = σ × opening tegen de positie in (nodig voor $200 risico per trade)."""
+    p = strat["H"]
+    tick, slip = strat["instrument"]["tick"], strat["slippage_ticks"] * strat["instrument"]["tick"]
+    cps = p["checkpunten"]
+    hs = [h for h in hist if h.ruis and all(cp in h.ruis for cp in cps)][-p["ruis_dagen"]:]
+    if len(hs) < p["ruis_dagen"]:
+        return [], "te_weinig_historie"
+    if "09:30" not in dag.bars or not dag.vorig_slot:
+        return [], "geen_data"
+    o = dag.bars["09:30"][0]
+    sigma = {cp: sum(h.ruis[cp] for h in hs) / len(hs) for cp in cps}
+    ub = {cp: max(o, dag.vorig_slot) * (1 + sigma[cp]) for cp in cps}
+    lb = {cp: min(o, dag.vorig_slot) * (1 - sigma[cp]) for cp in cps}
+    vw = vwap_reeks(dag.bars)
+    trades, reden, pos = [], "geen_uitbraak", None
+
+    def sluit(t):
+        rek.dag_pnl += t["netto"]
+        trades.append(t)
+
+    for cp in cps:
+        prijs = prijs_om(dag.bars, cp, "09:30")
+        if prijs is None:
+            continue
+        net_uit = None
+        if pos:
+            t = simuleer_trade(dag.bars, pos["r"], pos["minuut"], pos["instap"], pos["stop"], None, cp, pos["n"], strat)
+            if t is None:
+                pos = None
+            elif t["uitstapreden"] == "stop":
+                sluit(t)
+                pos = None
+            else:
+                ks = [k for k in vw if k < cp]
+                v = vw[max(ks)] if ks else prijs
+                niveau = max(ub[cp], v) if pos["r"] > 0 else min(lb[cp], v)
+                if (prijs < niveau) if pos["r"] > 0 else (prijs > niveau):
+                    t["uitstapreden"] = "trailing"
+                    sluit(t)
+                    net_uit, pos = pos["r"], None
+        if pos or len(trades) >= p["max_trades_per_dag"] or cp > p["laatste_instap"]:
+            continue
+        r = 1 if prijs > ub[cp] else (-1 if prijs < lb[cp] else 0)
+        if r == 0 or r == net_uit:       # na een trailing-uitstap niet meteen in dezelfde richting terug
+            continue
+        minuut, opening = open_vanaf(dag.bars, cp, plus_min(cp, 1))
+        if opening is None:
+            reden = "geen_data"
+            continue
+        afstand = op_tick(sigma[cp] * o, tick)
+        if afstand < strat["min_stop_punten"] - 1e-9:
+            reden = "stop_te_klein"
+            continue
+        n, waarom = contracten(afstand, strat, rek.afstand_nu())
+        if n == 0:
+            reden = waarom
+            continue
+        instap = opening + r * slip
+        pos = {"r": r, "minuut": minuut, "instap": instap, "stop": instap - r * afstand, "n": n}
+    if pos:
+        t = simuleer_trade(dag.bars, pos["r"], pos["minuut"], pos["instap"], pos["stop"], None, p["uitstap"], pos["n"], strat)
+        if t:
+            sluit(t)
+    return trades, ("" if trades else reden)
+
+
 def speel(var, dag, hist, strat, rek):
     """-> (trades, reden). Niet-handeldagen en de weekstop eerst."""
     if dag.redenen:
@@ -239,6 +326,8 @@ def speel(var, dag, hist, strat, rek):
         trades, reden = strategie_b(dag, strat, rek)
     elif soort == "orb":
         trades, reden = strategie_g(dag, strat, rek)
+    elif soort == "noise_area":
+        trades, reden = strategie_h(dag, hist, strat, rek)
     else:
         trades, reden = strategie_laatste_halfuur(dag, hist, strat, rek, var)
     for t in trades:

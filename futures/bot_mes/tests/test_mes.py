@@ -11,7 +11,7 @@ from pathlib import Path
 from bot_mes.forward import ROOT, journal_trades, laad, lees_csv, run
 from bot_mes.kalender import contract_code
 from bot_mes.kern import contracten, simuleer_trade, vijf_minuten, vwap_reeks
-from bot_mes.strategieen import Dag, Rekening, maak_dag, speel, strategie_a, willekeurige_richting
+from bot_mes.strategieen import Dag, Rekening, maak_dag, ruis_prijzen, ruis_uit, speel, strategie_a, willekeurige_richting
 from bot_mes.yahoo import ticker
 
 STRAT, KAL, FIRM = laad()
@@ -257,6 +257,7 @@ class TestForward(unittest.TestCase):
         verwacht, hist, vorig = [], [], None
         for d in sorted(data):
             dag = maak_dag(d, "ESZ6", data[d], vorig, KAL)
+            dag.ruis = ruis_uit(*ruis_prijzen(data[d], self.strat["H"]["checkpunten"]))
             if d >= start and d <= dt.date(2026, 11, 20):
                 for v in self.strat["varianten"]:
                     eerder = [t for t in verwacht if t["strategie"] == v]
@@ -306,8 +307,71 @@ class TestConfig(unittest.TestCase):
     def test_strategy_json(self):
         with open(ROOT / "bot_mes" / "strategy.json", encoding="utf-8") as f:
             s = json.load(f)
-        self.assertEqual(sorted(s["varianten"]), list("ABCDEGR"))
+        self.assertEqual(sorted(s["varianten"]), list("ABCDEGHR"))
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNoiseAreaH(unittest.TestCase):
+    """Strategie H (toegevoegd 5 okt 2026)."""
+    CPS = STRAT["H"]["checkpunten"]
+
+    def hist(self, ruis=0.002, n=14):
+        return [Dag(D - dt.timedelta(days=i + 1), "ESZ6", {}, 100, 100, 100, 100, [], {cp: ruis for cp in self.CPS})
+                for i in range(n)][::-1]
+
+    def test_te_weinig_historie(self):
+        from bot_mes.strategieen import strategie_h
+        dag = maak_dag(D, "ESZ6", dag_bars([("09:30", "15:59", 6000.0)]), 6000.0, KAL)
+        self.assertEqual(strategie_h(dag, self.hist(n=13), STRAT, Rekening(5000))[1], "te_weinig_historie")
+
+    def test_binnen_band_geen_trade(self):
+        from bot_mes.strategieen import strategie_h
+        dag = maak_dag(D, "ESZ6", dag_bars([("09:30", "15:59", 6000.0)]), 6000.0, KAL)
+        self.assertEqual(strategie_h(dag, self.hist(), STRAT, Rekening(5000)), ([], "geen_uitbraak"))
+
+    def test_uitbraak_long_tot_slot(self):
+        """σ = 0,2% → band 6012; om 10:30 staat hij op 6020 → long op de opening van 10:30, harde stop 12 punten, uit 15:59."""
+        from bot_mes.strategieen import strategie_h
+        bars = dag_bars([("09:30", "10:14", 6000.0), ("10:15", "15:59", 6020.0)])
+        dag = maak_dag(D, "ESZ6", bars, 6000.0, KAL)
+        trades, reden = strategie_h(dag, self.hist(), STRAT, Rekening(5000))
+        self.assertEqual(reden, "")
+        self.assertEqual(len(trades), 1)
+        t = trades[0]
+        self.assertEqual((t["richting"], t["instap_minuut"], t["uitstapreden"]), (1, "10:30", "tijd"))
+        self.assertAlmostEqual(t["instap"], 6020.25)
+        self.assertAlmostEqual(t["stop"], 6020.25 - 12.0)
+        self.assertEqual(t["contracten"], 3)          # floor(200 / (12 × 5))
+
+    def test_trailing_uitstap_onder_band(self):
+        """Long vanaf 10:30; om 12:00 terug op 6010 (< band 6012, boven de harde stop) → trailing-uitstap op de opening van 12:00."""
+        from bot_mes.strategieen import strategie_h
+        bars = dag_bars([("09:30", "10:14", 6000.0), ("10:15", "11:49", 6020.0), ("11:50", "15:59", 6010.0)])
+        dag = maak_dag(D, "ESZ6", bars, 6000.0, KAL)
+        trades, _ = strategie_h(dag, self.hist(), STRAT, Rekening(5000))
+        self.assertEqual(trades[0]["uitstapreden"], "trailing")
+        self.assertEqual(trades[0]["uitstap_minuut"], "12:00")
+        self.assertEqual(len(trades), 1)              # geen herinstap long op hetzelfde controlepunt
+
+    def test_harde_stop(self):
+        from bot_mes.strategieen import strategie_h
+        bars = dag_bars([("09:30", "10:14", 6000.0), ("10:15", "10:44", 6020.0), ("10:45", "15:59", 6005.0)])
+        dag = maak_dag(D, "ESZ6", bars, 6000.0, KAL)
+        trades, _ = strategie_h(dag, self.hist(), STRAT, Rekening(5000))
+        self.assertEqual(trades[0]["uitstapreden"], "stop")
+        self.assertEqual(trades[0]["uitstap_minuut"], "10:45")
+
+    def test_cache_bewaart_halfuurprijzen(self):
+        from bot_mes.forward import Cache
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            c = Cache(tmp / "dagen.csv", self.CPS)
+            c.zet(D, "ESZ6", dag_bars([("09:30", "15:59", 6000.0)]), "1m")
+            c.bewaar()
+            c2 = Cache(tmp / "dagen.csv", self.CPS)
+            self.assertEqual(c2.ruis(D, "ESZ6"), {cp: 0.0 for cp in self.CPS})
+        finally:
+            shutil.rmtree(tmp)

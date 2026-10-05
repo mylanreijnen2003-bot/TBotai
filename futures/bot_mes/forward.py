@@ -15,7 +15,7 @@ from pathlib import Path
 
 from .account import account_uit_trades
 from .kalender import Kalender, contract_code
-from .strategieen import Dag, Rekening, maak_dag, prijzen, speel
+from .strategieen import Dag, Rekening, maak_dag, prijzen, ruis_prijzen, ruis_uit, speel
 from .tijd import ET
 
 BOT = Path(__file__).resolve().parent
@@ -66,13 +66,16 @@ def journal_trades(map_, strategie=None):
 
 
 class Cache:
-    """Per (datum, contract) de prijzen van 10:00, 15:30 en 16:00 (historie voor C, D, E en R)."""
+    """Per (datum, contract) de prijzen van 10:00, 15:30 en 16:00 (historie voor C, D, E en R), plus de opening van
+    09:30 en de prijs op elk halfuur-controlepunt (historie voor H)."""
 
-    def __init__(self, pad):
+    def __init__(self, pad, checkpunten=()):
         self.pad = Path(pad)
+        self.cps = list(checkpunten)
+        self.kol = ["p1000", "p1530", "p1600", "o0930"] + ["c" + cp.replace(":", "") for cp in self.cps]
         self.d = {}
         for r in lees_csv(self.pad):
-            self.d[(r["datum"], r["contract"])] = {k: (float(r[k]) if r[k] else None) for k in ("p1000", "p1530", "p1600")}
+            self.d[(r["datum"], r["contract"])] = {k: (float(r[k]) if r.get(k) else None) for k in self.kol}
             self.d[(r["datum"], r["contract"])]["bron"] = r["bron"]
 
     def zet(self, datum, contract, bars, bron):
@@ -80,14 +83,22 @@ class Cache:
         if k in self.d and self.d[k]["bron"] == "1m" and bron != "1m":
             return
         p1000, p1530, p1600 = prijzen(bars)
-        self.d[k] = {"p1000": p1000, "p1530": p1530, "p1600": p1600, "bron": bron}
+        o, ps = ruis_prijzen(bars, self.cps)
+        self.d[k] = {"p1000": p1000, "p1530": p1530, "p1600": p1600, "o0930": o, "bron": bron,
+                     **{"c" + cp.replace(":", ""): ps[cp] for cp in self.cps}}
 
     def get(self, datum, contract):
         return self.d.get((datum.isoformat(), contract))
 
+    def ruis(self, datum, contract):
+        v = self.get(datum, contract)
+        if not v:
+            return None
+        return ruis_uit(v.get("o0930"), {cp: v.get("c" + cp.replace(":", "")) for cp in self.cps})
+
     def bewaar(self):
-        schrijf_csv(self.pad, ["datum", "contract", "p1000", "p1530", "p1600", "bron"],
-                    [{"datum": d, "contract": c, **{k: ("" if v[k] is None else v[k]) for k in ("p1000", "p1530", "p1600")},
+        schrijf_csv(self.pad, ["datum", "contract"] + self.kol + ["bron"],
+                    [{"datum": d, "contract": c, **{k: ("" if v.get(k) is None else v[k]) for k in self.kol},
                       "bron": v["bron"]} for (d, c), v in sorted(self.d.items())])
 
 
@@ -106,7 +117,8 @@ def historie(d, label, kal, strat, cache):
         p = cache.get(h, label) if kal.is_handelsdag(h) else None
         if p:
             vp = cache.get(kal.vorige_handelsdag(h), label)
-            dag = Dag(h, label, {}, p["p1000"], p["p1530"], p["p1600"], vp["p1600"] if vp else None, kal.redenen_geen_trade(h))
+            dag = Dag(h, label, {}, p["p1000"], p["p1530"], p["p1600"], vp["p1600"] if vp else None, kal.redenen_geen_trade(h),
+                      cache.ruis(h, label))
             if dag.geldig:
                 out.append(dag)
         h += dt.timedelta(days=1)
@@ -158,7 +170,7 @@ def run(bron, map_=STATE, nu=None, strat=None, log=print):
             else:
                 dagen.append(d)
         d += dt.timedelta(days=1)
-    cache = Cache(map_ / "koersen" / "dagen.csv")
+    cache = Cache(map_ / "koersen" / "dagen.csv", strat.get("H", {}).get("checkpunten", ()))
     per_contract = {}
     for d in dagen:
         per_contract.setdefault(kal.contract_voor(d), []).append(d)
@@ -169,7 +181,8 @@ def run(bron, map_=STATE, nu=None, strat=None, log=print):
         label = contract_code(*jm)
         eerste = ds[0] if ds else max(start, vandaag)
         h_van = max(vandaag - dt.timedelta(days=f["max_dagen_terug_5m"]), eerste - dt.timedelta(days=f["historie_kalenderdagen"]))
-        ontbreekt = [x for x in _dagen(h_van, eerste - dt.timedelta(days=1)) if kal.is_handelsdag(x) and not cache.get(x, label)]
+        ontbreekt = [x for x in _dagen(h_van, eerste - dt.timedelta(days=1))
+                     if kal.is_handelsdag(x) and (not cache.get(x, label) or (cache.cps and not cache.ruis(x, label)))]
         if ontbreekt:
             l5, data5 = haal(bron, jm, ontbreekt[0], ontbreekt[-1], "5m")
             for x, b in data5.items():

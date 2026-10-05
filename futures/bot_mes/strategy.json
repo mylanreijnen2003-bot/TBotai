@@ -21,9 +21,10 @@
     "D": {"naam": "D – ROD-momentum laatste half uur, filter", "soort": "laatste_halfuur", "signaal": "rod", "filter": true},
     "E": {"naam": "E – eerste half uur incl. nacht → laatste half uur (Gao e.a.)", "soort": "laatste_halfuur", "signaal": "r1000", "filter": false},
     "G": {"naam": "G – opening range breakout 5 min, 10R (Zarattini e.a.)", "soort": "orb"},
-    "R": {"naam": "R – willekeurige richting op de dagen van D (controle)", "soort": "laatste_halfuur", "signaal": "willekeurig", "filter": true}
+    "R": {"naam": "R – willekeurige richting op de dagen van D (controle)", "soort": "laatste_halfuur", "signaal": "willekeurig", "filter": true},
+    "H": {"naam": "H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt)", "soort": "noise_area"}
   },
-  "richtinggevende_varianten": ["A", "C", "D", "E", "G"],
+  "richtinggevende_varianten": ["A", "C", "D", "E", "G", "H"],
   "willekeurig_seed": 20261003,
 
   "A": {
@@ -42,6 +43,9 @@
   "B": {"instap": "15:30", "stop_punten": 8.0, "uitstap": "15:55"},
   "laatste_halfuur": {"instap": "15:30", "uitstap": "15:59", "stop_factor": 1.5, "stop_gem_dagen": 20, "filter_dagen": 60},
   "G": {"instap": "09:35", "doel_R": 10.0, "uitstap": "15:59"},
+  "H": {"checkpunten": ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"],
+        "ruis_dagen": 14, "laatste_instap": "15:30", "uitstap": "15:59", "max_trades_per_dag": 4,
+        "_uitleg": "Toegevoegd 5 okt 2026 vóór de eerste handelsdag (zie HYPOTHESIS.md, toevoeging H)."},
 
   "forward": {
     "startdatum": "2026-10-05",
