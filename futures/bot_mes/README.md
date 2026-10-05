@@ -1,6 +1,6 @@
 # MES-bot (Micro E-mini S&P 500) – forward test op GitHub
 
-Test zeven vooraf vastgelegde strategieën met **nepgeld** op **gratis Yahoo-koersen**. Geen account, geen API-sleutel, je laptop hoeft niet aan. Er gaat nooit een order naar een broker.
+Test acht vooraf vastgelegde strategieën met **nepgeld** op **gratis Yahoo-koersen**. Geen account, geen API-sleutel, je laptop hoeft niet aan. Er gaat nooit een order naar een broker.
 
 - **Stand:** [`../mes_paper/DAGRAPPORT.md`](../mes_paper/DAGRAPPORT.md)
 - **Regels en lat:** [`HYPOTHESIS.md`](HYPOTHESIS.md)
@@ -19,6 +19,7 @@ Test zeven vooraf vastgelegde strategieën met **nepgeld** op **gratis Yahoo-koe
 | D | Als C, alleen bij een grotere beweging dan normaal |
 | E | Richting van gisteren 16:00 tot 10:00 → laatste half uur |
 | G | Opening range breakout: richting van de eerste 5 minuten, doel 10R |
+| H | Noise area: elk half uur meegaan als de koers buiten zijn normale dagbeweging breekt (toegevoegd 5 okt) |
 | R | Willekeurige richting (controle) |
 
 ## Zelf doen
