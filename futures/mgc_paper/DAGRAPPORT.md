@@ -1,0 +1,33 @@
+# MGC-bot – dagrapport 05-10-2026
+
+Forward test (paper) op gratis Yahoo-koersen. Venster 13:00–13:29 New York-tijd (19:00–19:29 NL). Er gaat nooit een order naar een broker. Bijgewerkt 06-10-2026 00:52 UTC.
+
+## Vandaag
+
+Signalen om 13:00 ET: ROD -0.103%, ochtend +0.526%.
+
+| Strategie | Beslissing | Contracten | Instap → uitstap | Uitstap / reden | Netto | R |
+|---|---|---:|---|---|---:|---:|
+| A – laatste-halfuur momentum (ROD, filter) | geen trade | | | nog te weinig historie | | |
+| B – altijd long (benchmark) | geen trade | | | nog te weinig historie | | |
+| C – ROD zonder filter (replicatie paper) | geen trade | | | nog te weinig historie | | |
+| D – ochtendsignaal (overnacht + eerste halfuur, filter) | geen trade | | | nog te weinig historie | | |
+| E – eensgezind (ROD en ochtend zelfde richting) | geen trade | | | nog te weinig historie | | |
+| R – willekeurige richting (controle) | geen trade | | | nog te weinig historie | | |
+
+## Sinds de start
+
+Nog geen trades.
+
+## Eindoordeel forward test
+
+Pas bij 300 trades krijgt een strategie GO of NO-GO (lat in `bot_mgc/HYPOTHESIS.md`). Tot dan is het ruis.
+
+| Strategie | Oordeel | ≥ 300 trades | expectancy ≥ +0.05R | t-stat ≥ 2.50 | profit factor ≥ 1.15 | max drawdown < $2000 | beter dan B (altijd long) | beter dan R (willekeurig) |
+|---|---|---|---|---|---|---|---|---|
+| A – laatste-halfuur momentum (ROD, filter) | **loopt** | 0 trades | – | – | – | – | B – | R – |
+| C – ROD zonder filter (replicatie paper) | **loopt** | 0 trades | – | – | – | – | B – | R – |
+| D – ochtendsignaal (overnacht + eerste halfuur, filter) | **loopt** | 0 trades | – | – | – | – | B – | R – |
+| E – eensgezind (ROD en ochtend zelfde richting) | **loopt** | 0 trades | – | – | – | – | B – | R – |
+
+Expectancy = gemiddelde winst per trade in R (R = het geriskeerde bedrag, ± $200). B = altijd long, R = willekeurige richting; A, C, D en E moeten die allebei verslaan.

@@ -1,0 +1,22 @@
+<!doctype html><html lang='nl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>MGC dagrapport</title><style>
+:root{--bg:#fcfcfb;--fg:#0b0b0b;--fg2:#52514e;--rule:#e4e3df;--card:#ffffff;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#8f5bd6;--s6:#8a8984;--good:#0ca30c;--bad:#d93a3a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1a1a19;--fg:#fff;--fg2:#c3c2b7;
+--rule:#3a3a37;--card:#232321;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#a77ee8;--s6:#9a9990;--good:#3fbf3f;--bad:#ef6b6b}}
+:root[data-theme="dark"]{--bg:#1a1a19;--fg:#fff;--fg2:#c3c2b7;--rule:#3a3a37;--card:#232321;
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#a77ee8;--s6:#9a9990;--good:#3fbf3f;--bad:#ef6b6b}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;margin:0;padding:24px 16px}
+main{max-width:1100px;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px} h2{font-size:19px;margin:32px 0 8px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+h3{font-size:16px;margin:18px 0 6px} p.sub{color:var(--fg2);margin:0 0 16px}
+.wrap{overflow-x:auto} table{border-collapse:collapse;margin:6px 0 12px;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:4px 10px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left} th{color:var(--fg2);font-weight:600}
+.go{color:var(--good);font-weight:700} .nogo{color:var(--bad);font-weight:700}
+.badge{display:inline-block;padding:6px 14px;border-radius:6px;font-size:22px;font-weight:700;border:2px solid currentColor}
+.legend span{display:inline-flex;align-items:center;margin-right:16px;color:var(--fg2)}
+.legend i{display:inline-block;width:14px;height:3px;margin-right:6px;border-radius:2px}
+.chart{position:relative} .tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--rule);
+padding:6px 8px;border-radius:6px;font-size:13px;display:none;white-space:nowrap}
+small,.muted{color:var(--fg2)}
+</style></head><body><main><h1>MGC-bot – dagrapport 05-10-2026</h1><p class='sub'>Account mgc-paper. Venster 13:00–13:29 New York-tijd (19:00–19:29 Nederlandse tijd). Paper: live koersen, gesimuleerde fills, er gaat nooit een order naar de broker. Gemaakt 06-10-2026 00:52.</p><h2>Vandaag: 0 van 6 strategieën handelden, samen $0</h2><p class='muted'>Signalen om 13:00 ET: ROD -0.103%, ochtendsignaal +0.526%.</p><div class='wrap'><table><thead><tr><th>Strategie</th><th>Beslissing</th><th>Contracten</th><th>Instap → uitstap</th><th>Uitstap / reden</th><th>Netto</th><th>R</th></tr></thead><tbody><tr><td>A – laatste-halfuur momentum (ROD, filter)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr><tr><td>B – altijd long (benchmark)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr><tr><td>C – ROD zonder filter (replicatie paper)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr><tr><td>D – ochtendsignaal (overnacht + eerste halfuur, filter)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr><tr><td>E – eensgezind (ROD en ochtend zelfde richting)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr><tr><td>R – willekeurige richting (controle)</td><td>geen trade</td><td></td><td></td><td>nog te weinig historie</td><td></td><td></td></tr></tbody></table></div></main></body></html>
