@@ -192,11 +192,18 @@ def main(argv=None):
     broker = YahooBroker()
     if a.datatest:
         return datatest(broker, a.map)
+    fout_pad = Path(a.map) / "LAATSTE_FOUT.txt"
     try:
         res = run(broker, a.map)
     except VerbindingsFout as e:
-        print("Koersen ophalen mislukt (%s). De volgende run haalt de gemiste dagen in." % e)
+        tekst = "Koersen ophalen mislukt (%s). De volgende run haalt de gemiste dagen in." % e
+        print(tekst)
+        Path(a.map).mkdir(parents=True, exist_ok=True)
+        fout_pad.write_text("%s UTC\n%s\n" % (dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M"), tekst),
+                            encoding="utf-8")       # zichtbaar in de repo i.p.v. alleen in het Actions-log
         return 0
+    if fout_pad.exists():
+        fout_pad.unlink()
     if res is None:
         return 0
     print("Dagrapport: %s" % res["rapport"])

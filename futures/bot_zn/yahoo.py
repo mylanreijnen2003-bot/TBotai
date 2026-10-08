@@ -17,6 +17,7 @@ from .tijd import ET, UTC
 TERUGVAL = "ZN=F"
 MAX_1M = 28
 MAX_5M = 58
+MAX_DAGEN_PER_VERZOEK = {"1m": 7, "5m": 55}     # Yahoo: 1m max 8 dagen per verzoek, 5m max 60
 
 
 def ticker(jaar, maand, root="ZN"):
@@ -76,14 +77,19 @@ class YahooBroker:
         if van < grens_1m and tot >= grens_5m:
             stukken.append((max(van, grens_5m), min(tot, grens_1m - dt.timedelta(days=1)), "5m"))
         rijen = []
-        for a, b, iv in stukken:
-            sym = self.terugval.get(contract_id, contract_id)
-            r = self._haal(sym, a, b, iv)
-            if not r and iv == "1m" and sym == contract_id and (b - a).days >= 2:
-                # specifiek contract onbekend bij Yahoo: terugvallen op het doorlopende contract
-                r = self._haal(TERUGVAL, a, b, iv)
-                if r:
-                    self.terugval[contract_id] = TERUGVAL
-            rijen.extend(r)
+        for a0, b0, iv in stukken:
+            stap = MAX_DAGEN_PER_VERZOEK[iv]
+            a = a0
+            while a <= b0:                 # Yahoo geeft max 8 dagen 1-minuutdata per verzoek: in blokken ophalen
+                b = min(b0, a + dt.timedelta(days=stap - 1))
+                sym = self.terugval.get(contract_id, contract_id)
+                r = self._haal(sym, a, b, iv)
+                if not r and iv == "1m" and sym == contract_id and (b - a).days >= 2:
+                    # specifiek contract onbekend bij Yahoo: terugvallen op het doorlopende contract
+                    r = self._haal(TERUGVAL, a, b, iv)
+                    if r:
+                        self.terugval[contract_id] = TERUGVAL
+                rijen.extend(r)
+                a = b + dt.timedelta(days=1)
         s, e = start.astimezone(UTC), eind.astimezone(UTC)
         return [{"t": t, "o": o, "h": h, "l": l, "c": c, "v": 0} for t, o, h, l, c in sorted(rijen) if s <= t < e]

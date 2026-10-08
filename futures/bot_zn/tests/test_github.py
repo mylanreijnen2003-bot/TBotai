@@ -72,6 +72,25 @@ class TestYahoo(unittest.TestCase):
         self.assertLess(per_dag[dt.date(2026, 9, 1)], 100)            # 5-minuut
         self.assertGreater(per_dag[dt.date(2026, 10, 15)], 400)       # 1-minuut
 
+    def test_1m_in_blokken_van_max_7_dagen(self):
+        """Yahoo weigert meer dan 8 dagen 1-minuutdata per verzoek (zo liep de ZN-run van 5-7 okt 2026 vast)."""
+        log = []
+        geschiedenis = nep_history(log=log)
+
+        def streng(sym, start, eind, interval):
+            if interval == "1m" and (dt.date.fromisoformat(eind) - dt.date.fromisoformat(start)).days > 8:
+                raise RuntimeError("Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+            return geschiedenis(sym, start, eind, interval)
+
+        b = YahooBroker(vandaag=dt.date(2026, 10, 16), history=streng)
+        bars = b.bars("ZNZ26.CBT", dt.datetime(2026, 9, 20, tzinfo=ET), dt.datetime(2026, 10, 17, tzinfo=ET))
+        dagen = {x["t"].astimezone(ET).date() for x in bars}
+        self.assertIn(dt.date(2026, 9, 21), dagen)
+        self.assertIn(dt.date(2026, 10, 15), dagen)
+        for sym, start, eind, iv in log:
+            if iv == "1m":
+                self.assertLessEqual((dt.date.fromisoformat(eind) - dt.date.fromisoformat(start)).days, 8)
+
     def test_terugval(self):
         b = YahooBroker(vandaag=dt.date(2026, 10, 16), history=nep_history(symbolen=("ZN=F",)))
         bars = b.bars("ZNZ26.CBT", dt.datetime(2026, 10, 12, tzinfo=ET), dt.datetime(2026, 10, 17, tzinfo=ET))
