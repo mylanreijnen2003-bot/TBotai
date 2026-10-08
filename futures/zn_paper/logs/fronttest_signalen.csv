@@ -1,0 +1,25 @@
+datum,strategie,status,reden,richting,contracten,instap,uitstap,uitstapreden,instap_bar,uitstap_bar,netto,R,verwerkt_op
+2026-10-05,A,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-05,B1,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-05,B2,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-05,C,geen,geen_maandeinde,,,,,,,,,,2026-10-08 05:46
+2026-10-05,D,geen,geen_veiling,,,,,,,,,,2026-10-08 05:46
+2026-10-05,E,geen,filter_zwak,,,,,,,,,,2026-10-08 05:46
+2026-10-05,G,gevuld,,short,1,104.21875,104.125,tijd,08:51,12:00,90.13,0.577,2026-10-08 05:46
+2026-10-05,H,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-06,A,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-06,B1,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-06,B2,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-06,C,geen,geen_maandeinde,,,,,,,,,,2026-10-08 05:46
+2026-10-06,D,geen,geen_veiling,,,,,,,,,,2026-10-08 05:46
+2026-10-06,E,geen,geen_release,,,,,,,,,,2026-10-08 05:46
+2026-10-06,G,gevuld,,short,2,104.421875,104.53125,stop,09:12,10:49,-225.99,-1.205,2026-10-08 05:46
+2026-10-06,H,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
+2026-10-07,A,geen,fomc_notulen,,,,,,,,,,2026-10-08 05:46
+2026-10-07,B1,geen,fomc_notulen,,,,,,,,,,2026-10-08 05:46
+2026-10-07,B2,geen,fomc_notulen,,,,,,,,,,2026-10-08 05:46
+2026-10-07,C,geen,geen_maandeinde,,,,,,,,,,2026-10-08 05:46
+2026-10-07,D,geen,fomc_notulen,,,,,,,,,,2026-10-08 05:46
+2026-10-07,E,geen,geen_release,,,,,,,,,,2026-10-08 05:46
+2026-10-07,G,gevuld,,short,1,104.046875,104.171875,stop,08:54,09:49,-128.62,-1.176,2026-10-08 05:46
+2026-10-07,H,geen,te_weinig_historie,,,,,,,,,,2026-10-08 05:46
