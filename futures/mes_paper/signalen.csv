@@ -23,3 +23,11 @@ datum,strategie,status,reden,trades,netto,verwerkt_op
 2026-10-07,G,gevuld,,1,-212.35,2026-10-07 21:01
 2026-10-07,R,geen,te_weinig_historie,0,,2026-10-07 21:01
 2026-10-07,H,geen,geen_uitbraak,0,,2026-10-07 21:01
+2026-10-08,A,geen,pullback_te_ver_van_vwap,0,,2026-10-08 21:14
+2026-10-08,B,gevuld,,1,-18.60,2026-10-08 21:14
+2026-10-08,C,gevuld,,1,-104.91,2026-10-08 21:14
+2026-10-08,D,geen,te_weinig_historie,0,,2026-10-08 21:14
+2026-10-08,E,gevuld,,1,-104.91,2026-10-08 21:14
+2026-10-08,G,gevuld,,1,-184.88,2026-10-08 21:14
+2026-10-08,R,geen,te_weinig_historie,0,,2026-10-08 21:14
+2026-10-08,H,gevuld,,1,-133.72,2026-10-08 21:14
