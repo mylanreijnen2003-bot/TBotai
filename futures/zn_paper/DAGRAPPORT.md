@@ -1,6 +1,6 @@
-# ZN-bot – dagrapport 09-10-2026
+# ZN-bot – dagrapport 13-10-2026
 
-Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 13-10-2026 02:13 UTC.
+Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 13-10-2026 23:50 UTC.
 
 ## Laatste handelsdag
 
@@ -12,7 +12,7 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | C – maandeinde long | geen trade: geen maandeinde | | | | |
 | D – veilingdag: long na de uitslag van 13:00 | geen trade: geen veiling | | | | |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: geen release | | | | |
-| G – opening range breakout (controlegroep) | short (tijd) | 1 | 104.5 → 104.546875 | −$50 | -0.323 |
+| G – opening range breakout (controlegroep) | short (tijd) | 3 | 104.859375 → 104.6875 | $505 | 2.692 |
 | H – ochtend-reversal van het laatste half uur van gisteren | geen trade: te weinig historie | | | | |
 
 ## Sinds de start
@@ -25,7 +25,7 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | C – maandeinde long | 0 | – | – | – | – | – | 0 / 100 trades |
 | D – veilingdag: long na de uitslag van 13:00 | 1 | 0% | -1.205 | – | −$226 | $226 | 1 / 100 trades |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | 0 | – | – | – | – | – | 0 / 100 trades |
-| G – opening range breakout (controlegroep) | 5 | 40% | -0.366 | -1.00 | −$260 | $355 | 5 / 100 trades |
+| G – opening range breakout (controlegroep) | 6 | 50% | +0.143 | 0.24 | $245 | $355 | 6 / 100 trades |
 | H – ochtend-reversal van het laatste half uur van gisteren | 0 | – | – | – | – | – | 0 / 100 trades |
 
 R = winst of verlies gedeeld door het geplande risico (± $200). G is een controlegroep: als die "wint", is dat toeval. Pas na tientallen trades per strategie zegt dit iets. Volledige tabel met grafiek: `reports/fronttest.html`.
