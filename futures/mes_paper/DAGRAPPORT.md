@@ -1,30 +1,30 @@
-# MES-bot – dagrapport 09-10-2026
+# MES-bot – dagrapport 12-10-2026
 
-Forward test (paper) op gratis Yahoo-koersen van de S&P 500-future (ES, zelfde prijs als MES). Er gaat nooit een order naar een broker. Start 2026-10-05. Bijgewerkt 10-10-2026 00:52 UTC.
+Forward test (paper) op gratis Yahoo-koersen van de S&P 500-future (ES, zelfde prijs als MES). Er gaat nooit een order naar een broker. Start 2026-10-05. Bijgewerkt 13-10-2026 02:35 UTC.
 
 ## Laatste handelsdag
 
 | Strategie | Uitkomst | Contracten | Instap → uitstap | Netto | R |
 |---|---|---:|---|---:|---:|
-| A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R) | geen trade: pullback bleef te ver boven/onder de VWAP | | | | |
-| B – eerste half uur → laatste half uur (benchmark uit plan) | short, tijdsuitstap | 5 | 15:30 7864.5 → 7860.25 | $100 | +0.501 |
-| C – ROD-momentum laatste half uur, zonder filter | long, tijdsuitstap | 3 | 15:30 7865.0 → 7860.25 | −$75 | -0.487 |
+| A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R) | geen trade: geen instapsignaal na een pullback | | | | |
+| B – eerste half uur → laatste half uur (benchmark uit plan) | short, stop geraakt | 5 | 15:30 7849.25 → 7857.5 | −$212 | -1.062 |
+| C – ROD-momentum laatste half uur, zonder filter | short, tijdsuitstap | 3 | 15:30 7849.25 → 7857.5 | −$127 | -0.829 |
 | D – ROD-momentum laatste half uur, filter | geen trade: nog te weinig historie | | | | |
-| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | long, tijdsuitstap | 3 | 15:30 7865.0 → 7860.25 | −$75 | -0.487 |
-| G – opening range breakout 5 min, 10R (Zarattini e.a.) | long, stop geraakt | 5 | 09:35 7841.5 → 7835.25 | −$162 | -1.082 |
+| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | short, tijdsuitstap | 3 | 15:30 7849.25 → 7857.5 | −$127 | -0.829 |
+| G – opening range breakout 5 min, 10R (Zarattini e.a.) | long, stop geraakt | 5 | 09:35 7864.5 → 7861.75 | −$75 | -1.198 |
 | R – willekeurige richting op de dagen van D (controle) | geen trade: nog te weinig historie | | | | |
-| H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt) | long, tijdsuitstap | 1 | 15:00 7866.0 → 7860.25 | −$30 | -0.235 |
+| H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt) | geen trade: koers bleef binnen de ruisband | | | | |
 
 ## Sinds de start
 
 | Strategie | Trades | Winrate | Expectancy (R) | t-stat | Netto | Max drawdown | Virtueel saldo | Oordeel |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
 | A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R) | 0 | – | – | – | – | – | $50.000 | loopt (0/300 trades) |
-| B – eerste half uur → laatste half uur (benchmark uit plan) | 5 | 20% | -0.393 | -1.42 | −$393 | $493 | $49.607 | vergelijking |
-| C – ROD-momentum laatste half uur, zonder filter | 5 | 0% | -0.571 | -4.11 | −$446 | $446 | $49.554 | loopt (5/300 trades) |
+| B – eerste half uur → laatste half uur (benchmark uit plan) | 6 | 17% | -0.504 | -2.01 | −$605 | $605 | $49.395 | vergelijking |
+| C – ROD-momentum laatste half uur, zonder filter | 6 | 0% | -0.614 | -5.06 | −$573 | $573 | $49.427 | loopt (6/300 trades) |
 | D – ROD-momentum laatste half uur, filter | 0 | – | – | – | – | – | $50.000 | loopt (0/300 trades) |
-| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | 5 | 0% | -0.571 | -4.11 | −$446 | $446 | $49.554 | loopt (5/300 trades) |
-| G – opening range breakout 5 min, 10R (Zarattini e.a.) | 5 | 20% | -0.223 | -0.26 | −$209 | $753 | $49.791 | loopt (5/300 trades) |
+| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | 6 | 0% | -0.614 | -5.06 | −$573 | $573 | $49.427 | loopt (6/300 trades) |
+| G – opening range breakout 5 min, 10R (Zarattini e.a.) | 6 | 17% | -0.386 | -0.54 | −$284 | $828 | $49.716 | loopt (6/300 trades) |
 | R – willekeurige richting op de dagen van D (controle) | 0 | – | – | – | – | – | $50.000 | vergelijking |
 | H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt) | 5 | 20% | -0.254 | -0.74 | −$154 | $329 | $49.846 | loopt (5/300 trades) |
 
