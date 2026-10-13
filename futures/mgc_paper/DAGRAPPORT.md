@@ -1,10 +1,10 @@
-# MGC-bot – dagrapport 12-10-2026
+# MGC-bot – dagrapport 13-10-2026
 
-Forward test (paper) op gratis Yahoo-koersen. Venster 13:00–13:29 New York-tijd (19:00–19:29 NL). Er gaat nooit een order naar een broker. Bijgewerkt 13-10-2026 01:25 UTC.
+Forward test (paper) op gratis Yahoo-koersen. Venster 13:00–13:29 New York-tijd (19:00–19:29 NL). Er gaat nooit een order naar een broker. Bijgewerkt 13-10-2026 23:19 UTC.
 
 ## Vandaag
 
-Signalen om 13:00 ET: ROD -0.659%, ochtend -0.664%.
+Signalen om 13:00 ET: ROD -0.346%, ochtend +0.382%.
 
 | Strategie | Beslissing | Contracten | Instap → uitstap | Uitstap / reden | Netto | R |
 |---|---|---:|---|---|---:|---:|
