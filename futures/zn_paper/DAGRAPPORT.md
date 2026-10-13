@@ -1,6 +1,6 @@
 # ZN-bot – dagrapport 09-10-2026
 
-Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 10-10-2026 00:17 UTC.
+Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 13-10-2026 02:13 UTC.
 
 ## Laatste handelsdag
 
