@@ -47,3 +47,11 @@ datum,strategie,status,reden,trades,netto,verwerkt_op
 2026-10-12,G,gevuld,,1,-74.85,2026-10-12 22:35
 2026-10-12,R,geen,te_weinig_historie,0,,2026-10-12 22:35
 2026-10-12,H,geen,geen_uitbraak,0,,2026-10-12 22:35
+2026-10-13,A,geen,geen_bias,0,,2026-10-13 20:18
+2026-10-13,B,gevuld,,1,-74.85,2026-10-13 20:18
+2026-10-13,C,gevuld,,1,-74.88,2026-10-13 20:18
+2026-10-13,D,geen,te_weinig_historie,0,,2026-10-13 20:18
+2026-10-13,E,gevuld,,1,45.12,2026-10-13 20:18
+2026-10-13,G,gevuld,,1,-156.10,2026-10-13 20:18
+2026-10-13,R,geen,te_weinig_historie,0,,2026-10-13 20:18
+2026-10-13,H,geen,geen_uitbraak,0,,2026-10-13 20:18
