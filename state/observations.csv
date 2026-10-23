@@ -45,3 +45,5 @@ date,name,value,extra,fetched_at
 2026-10-21,btc_funding,1.7654596270976e-05,krakenfutures,2026-10-21T04:47:26+00:00
 2026-10-22,fear_greed,68.0,Greed,2026-10-22T04:45:56+00:00
 2026-10-22,btc_funding,2.7780161450622e-05,krakenfutures,2026-10-22T04:45:56+00:00
+2026-10-23,fear_greed,50.0,Neutral,2026-10-23T04:49:51+00:00
+2026-10-23,btc_funding,3.062286597867e-05,krakenfutures,2026-10-23T04:49:51+00:00
