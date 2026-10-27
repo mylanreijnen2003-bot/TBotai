@@ -1,6 +1,6 @@
-# ZN-bot – dagrapport 23-10-2026
+# ZN-bot – dagrapport 26-10-2026
 
-Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 23-10-2026 23:26 UTC.
+Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 27-10-2026 00:02 UTC.
 
 ## Laatste handelsdag
 
@@ -12,7 +12,7 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | C – maandeinde long | geen trade: geen maandeinde | | | | |
 | D – veilingdag: long na de uitslag van 13:00 | geen trade: geen veiling | | | | |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: geen release | | | | |
-| G – opening range breakout (controlegroep) | long (stop) | 1 | 106.328125 → 106.15625 | −$176 | -1.123 |
+| G – opening range breakout (controlegroep) | long (tijd) | 2 | 106.15625 → 106.09375 | −$132 | -0.705 |
 | H – ochtend-reversal van het laatste half uur van gisteren | geen trade: te weinig historie | | | | |
 
 ## Sinds de start
@@ -25,7 +25,7 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | C – maandeinde long | 0 | – | – | – | – | – | 0 / 100 trades |
 | D – veilingdag: long na de uitslag van 13:00 | 1 | 0% | -1.205 | – | −$226 | $226 | 1 / 100 trades |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | 0 | – | – | – | – | – | 0 / 100 trades |
-| G – opening range breakout (controlegroep) | 14 | 21% | -0.606 | -2.02 | −$1.314 | $1.559 | 14 / 100 trades |
+| G – opening range breakout (controlegroep) | 15 | 20% | -0.613 | -2.19 | −$1.446 | $1.691 | 15 / 100 trades |
 | H – ochtend-reversal van het laatste half uur van gisteren | 0 | – | – | – | – | – | 0 / 100 trades |
 
 R = winst of verlies gedeeld door het geplande risico (± $200). G is een controlegroep: als die "wint", is dat toeval. Pas na tientallen trades per strategie zegt dit iets. Volledige tabel met grafiek: `reports/fronttest.html`.
