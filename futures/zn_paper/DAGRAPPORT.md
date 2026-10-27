@@ -1,6 +1,6 @@
-# ZN-bot – dagrapport 26-10-2026
+# ZN-bot – dagrapport 27-10-2026
 
-Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 27-10-2026 00:02 UTC.
+Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 27-10-2026 23:57 UTC.
 
 ## Laatste handelsdag
 
@@ -10,9 +10,9 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | B1 – als A, maar ochtend en dag in dezelfde richting | geen trade: te weinig historie | | | | |
 | B2 – alleen de laatste 10 minuten | geen trade: te weinig historie | | | | |
 | C – maandeinde long | geen trade: geen maandeinde | | | | |
-| D – veilingdag: long na de uitslag van 13:00 | geen trade: geen veiling | | | | |
-| E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: geen release | | | | |
-| G – opening range breakout (controlegroep) | long (tijd) | 2 | 106.15625 → 106.09375 | −$132 | -0.705 |
+| D – veilingdag: long na de uitslag van 13:00 | long (tijd) | 2 | 106.046875 → 106.015625 | −$70 | -0.372 |
+| E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: filter zwak | | | | |
+| G – opening range breakout (controlegroep) | short (stop) | 1 | 105.984375 → 106.15625 | −$176 | -1.123 |
 | H – ochtend-reversal van het laatste half uur van gisteren | geen trade: te weinig historie | | | | |
 
 ## Sinds de start
@@ -23,9 +23,9 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | B1 – als A, maar ochtend en dag in dezelfde richting | 0 | – | – | – | – | – | 0 / 100 trades |
 | B2 – alleen de laatste 10 minuten | 0 | – | – | – | – | – | 0 / 100 trades |
 | C – maandeinde long | 0 | – | – | – | – | – | 0 / 100 trades |
-| D – veilingdag: long na de uitslag van 13:00 | 1 | 0% | -1.205 | – | −$226 | $226 | 1 / 100 trades |
+| D – veilingdag: long na de uitslag van 13:00 | 2 | 0% | -0.788 | -1.89 | −$296 | $296 | 2 / 100 trades |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | 0 | – | – | – | – | – | 0 / 100 trades |
-| G – opening range breakout (controlegroep) | 15 | 20% | -0.613 | -2.19 | −$1.446 | $1.691 | 15 / 100 trades |
+| G – opening range breakout (controlegroep) | 16 | 19% | -0.645 | -2.45 | −$1.622 | $1.867 | 16 / 100 trades |
 | H – ochtend-reversal van het laatste half uur van gisteren | 0 | – | – | – | – | – | 0 / 100 trades |
 
 R = winst of verlies gedeeld door het geplande risico (± $200). G is een controlegroep: als die "wint", is dat toeval. Pas na tientallen trades per strategie zegt dit iets. Volledige tabel met grafiek: `reports/fronttest.html`.
