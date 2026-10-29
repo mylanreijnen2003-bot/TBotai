@@ -1,18 +1,18 @@
-# ZN-bot – dagrapport 27-10-2026
+# ZN-bot – dagrapport 28-10-2026
 
-Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 27-10-2026 23:57 UTC.
+Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er gaat nooit een order naar een broker. Start: 2026-10-05. Bijgewerkt 29-10-2026 00:20 UTC.
 
 ## Laatste handelsdag
 
 | Strategie | Uitkomst | Contracten | Instap → uitstap | Netto | R |
 |---|---|---:|---|---:|---:|
-| A – laatste half uur, ROD-filter (basis) | geen trade: te weinig historie | | | | |
-| B1 – als A, maar ochtend en dag in dezelfde richting | geen trade: te weinig historie | | | | |
-| B2 – alleen de laatste 10 minuten | geen trade: te weinig historie | | | | |
-| C – maandeinde long | geen trade: geen maandeinde | | | | |
-| D – veilingdag: long na de uitslag van 13:00 | long (tijd) | 2 | 106.046875 → 106.015625 | −$70 | -0.372 |
-| E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: filter zwak | | | | |
-| G – opening range breakout (controlegroep) | short (stop) | 1 | 105.984375 → 106.15625 | −$176 | -1.123 |
+| A – laatste half uur, ROD-filter (basis) | geen trade: fomc | | | | |
+| B1 – als A, maar ochtend en dag in dezelfde richting | geen trade: fomc | | | | |
+| B2 – alleen de laatste 10 minuten | geen trade: fomc | | | | |
+| C – maandeinde long | long (stop) | 1 | 106.0 → 105.828125 | −$176 | -1.123 |
+| D – veilingdag: long na de uitslag van 13:00 | geen trade: fomc | | | | |
+| E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | geen trade: geen release | | | | |
+| G – opening range breakout (controlegroep) | short (stop) | 2 | 105.9375 → 106.03125 | −$195 | -1.246 |
 | H – ochtend-reversal van het laatste half uur van gisteren | geen trade: te weinig historie | | | | |
 
 ## Sinds de start
@@ -22,10 +22,10 @@ Fronttest (paper) van de 10-jaars Treasury-future op gratis Yahoo-koersen. Er ga
 | A – laatste half uur, ROD-filter (basis) | 0 | – | – | – | – | – | 0 / 100 trades |
 | B1 – als A, maar ochtend en dag in dezelfde richting | 0 | – | – | – | – | – | 0 / 100 trades |
 | B2 – alleen de laatste 10 minuten | 0 | – | – | – | – | – | 0 / 100 trades |
-| C – maandeinde long | 0 | – | – | – | – | – | 0 / 100 trades |
+| C – maandeinde long | 1 | 0% | -1.123 | – | −$176 | $176 | 1 / 100 trades |
 | D – veilingdag: long na de uitslag van 13:00 | 2 | 0% | -0.788 | -1.89 | −$296 | $296 | 2 / 100 trades |
 | E – drift vóór de cijfers van 10:00 (ISM, Conference Board) | 0 | – | – | – | – | – | 0 / 100 trades |
-| G – opening range breakout (controlegroep) | 16 | 19% | -0.645 | -2.45 | −$1.622 | $1.867 | 16 / 100 trades |
+| G – opening range breakout (controlegroep) | 17 | 18% | -0.680 | -2.72 | −$1.817 | $2.062 | 17 / 100 trades |
 | H – ochtend-reversal van het laatste half uur van gisteren | 0 | – | – | – | – | – | 0 / 100 trades |
 
 R = winst of verlies gedeeld door het geplande risico (± $200). G is een controlegroep: als die "wint", is dat toeval. Pas na tientallen trades per strategie zegt dit iets. Volledige tabel met grafiek: `reports/fronttest.html`.
