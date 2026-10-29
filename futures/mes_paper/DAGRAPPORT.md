@@ -1,19 +1,19 @@
-# MES-bot – dagrapport 27-10-2026
+# MES-bot – dagrapport 28-10-2026
 
-Forward test (paper) op gratis Yahoo-koersen van de S&P 500-future (ES, zelfde prijs als MES). Er gaat nooit een order naar een broker. Start 2026-10-05. Bijgewerkt 28-10-2026 00:32 UTC.
+Forward test (paper) op gratis Yahoo-koersen van de S&P 500-future (ES, zelfde prijs als MES). Er gaat nooit een order naar een broker. Start 2026-10-05. Bijgewerkt 29-10-2026 00:58 UTC.
 
 ## Laatste handelsdag
 
 | Strategie | Uitkomst | Contracten | Instap → uitstap | Netto | R |
 |---|---|---:|---|---:|---:|
-| A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R) | geen trade: pullback bleef te ver boven/onder de VWAP | | | | |
-| B – eerste half uur → laatste half uur (benchmark uit plan) | short, stop geraakt | 5 | 15:30 7762.25 → 7770.5 | −$212 | -1.062 |
-| C – ROD-momentum laatste half uur, zonder filter | long, tijdsuitstap | 4 | 15:30 7762.75 → 7761.0 | −$40 | -0.199 |
-| D – ROD-momentum laatste half uur, filter | geen trade: nog te weinig historie | | | | |
-| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | long, tijdsuitstap | 4 | 15:30 7762.75 → 7761.0 | −$40 | -0.199 |
-| G – opening range breakout 5 min, 10R (Zarattini e.a.) | long, stop geraakt | 5 | 09:35 7736.5 → 7731.5 | −$131 | -1.104 |
-| R – willekeurige richting op de dagen van D (controle) | geen trade: nog te weinig historie | | | | |
-| H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt) | long, trailing stop (band/VWAP) | 1 | 12:00 7768.25 → 7754.75 | −$69 | -0.591 |
+| A – laatste-uur trendvervolg (VWAP + opening range + pullback, 2R) | geen trade: FOMC-dag | | | | |
+| B – eerste half uur → laatste half uur (benchmark uit plan) | geen trade: FOMC-dag | | | | |
+| C – ROD-momentum laatste half uur, zonder filter | geen trade: FOMC-dag | | | | |
+| D – ROD-momentum laatste half uur, filter | geen trade: FOMC-dag | | | | |
+| E – eerste half uur incl. nacht → laatste half uur (Gao e.a.) | geen trade: FOMC-dag | | | | |
+| G – opening range breakout 5 min, 10R (Zarattini e.a.) | geen trade: FOMC-dag | | | | |
+| R – willekeurige richting op de dagen van D (controle) | geen trade: FOMC-dag | | | | |
+| H – noise-area momentum, halfuurlijks (Zarattini e.a. 2024; toegevoegd 5 okt) | geen trade: FOMC-dag | | | | |
 
 ## Sinds de start
 
