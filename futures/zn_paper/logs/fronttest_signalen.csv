@@ -135,3 +135,11 @@ datum,strategie,status,reden,richting,contracten,instap,uitstap,uitstapreden,ins
 2026-10-28,E,geen,geen_release,,,,,,,,,,2026-10-28 20:20
 2026-10-28,G,gevuld,,short,2,105.9375,106.03125,stop,08:56,08:58,-194.74,-1.246,2026-10-28 20:20
 2026-10-28,H,geen,te_weinig_historie,,,,,,,,,,2026-10-28 20:20
+2026-10-29,A,geen,te_weinig_historie,,,,,,,,,,2026-10-29 20:15
+2026-10-29,B1,geen,te_weinig_historie,,,,,,,,,,2026-10-29 20:15
+2026-10-29,B2,geen,te_weinig_historie,,,,,,,,,,2026-10-29 20:15
+2026-10-29,C,gevuld,,long,1,105.921875,106.171875,tijd,08:20,14:59,246.38,1.577,2026-10-29 20:15
+2026-10-29,D,geen,geen_veiling,,,,,,,,,,2026-10-29 20:15
+2026-10-29,E,geen,geen_release,,,,,,,,,,2026-10-29 20:15
+2026-10-29,G,gevuld,,long,1,106.109375,106.09375,tijd,09:18,12:00,-19.25,-0.123,2026-10-29 20:15
+2026-10-29,H,geen,te_weinig_historie,,,,,,,,,,2026-10-29 20:15
