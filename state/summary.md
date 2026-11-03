@@ -2,23 +2,23 @@
 
 Start: 2026-09-30. Een paper-test van maanden controleert code en kosten; hij wijst géén winnaar aan.
 
-Runs: 34 dagen verwerkt, geen dag gemist.
+Runs: 35 dagen verwerkt, geen dag gemist.
 
 Later gestart: M1 op 2026-10-03, M2 op 2026-10-03, S10 op 2026-10-02, S4 op 2026-10-02. Hun rendement telt vanaf die datum; vergelijk ze vooral met B1/B2 over dezelfde dagen.
 ## Resultaten sinds start
 
-Periode: 2026-09-30 t/m 2026-11-02
+Periode: 2026-09-30 t/m 2026-11-03
 
 | Portefeuille | Eindwaarde | Rendement | Max drawdown | Belegd nu |
 |---|---|---|---|---|
-| S1 | €9,699 | -3.0% | -4.1% | 7.1% |
-| S2 | €9,450 | -5.5% | -7.5% | 30.9% |
+| S1 | €9,670 | -3.3% | -4.2% | 6.7% |
+| S2 | €9,351 | -6.5% | -7.9% | 30.2% |
 | S3 | €8,326 | -16.7% | -17.4% | 0.0% |
-| S4 | €8,966 | -10.3% | -13.0% | 23.8% |
-| S10 | €9,273 | -7.3% | -9.9% | 100.0% |
-| M1 | €9,140 | -8.6% | -11.5% | 71.2% |
-| M2 | €9,372 | -6.3% | -8.0% | 36.7% |
-| B1 | €9,481 | -5.2% | -9.9% | 100.0% |
-| B2 | €8,078 | -19.2% | -24.8% | 99.9% |
+| S4 | €8,863 | -11.4% | -13.6% | 22.3% |
+| S10 | €9,060 | -9.4% | -10.8% | 100.0% |
+| M1 | €8,982 | -10.2% | -12.3% | 70.5% |
+| M2 | €9,302 | -7.0% | -8.3% | 36.1% |
+| B1 | €9,263 | -7.4% | -10.8% | 100.0% |
+| B2 | €7,770 | -22.3% | -25.9% | 99.9% |
 
-Rendement is inclusief kosten, gemeten vanaf het startkapitaal. Jaarcijfers en hypothesetoetsen verschijnen na 90 dagen (nu 33).
+Rendement is inclusief kosten, gemeten vanaf het startkapitaal. Jaarcijfers en hypothesetoetsen verschijnen na 90 dagen (nu 34).
